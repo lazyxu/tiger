@@ -1,0 +1,24 @@
+package yacc
+
+import (
+	"flag"
+	"testing"
+
+	"github.com/MeteorKL/tiger_compiler/absyn"
+	"github.com/MeteorKL/tiger_compiler/util"
+)
+
+func Test_Yacc(t *testing.T) {
+	args := flag.Args()
+	if len(args) < 1 {
+		println(`
+Usage:
+	go test -v -run='Test_Yacc' -args ../testcases/test4.tig
+`)
+		return
+	}
+	testfile := args[0]
+
+	absyn.PrintExp(testfile+".ast", YYParse(testfile))
+	util.Visualization(testfile + ".ast")
+}

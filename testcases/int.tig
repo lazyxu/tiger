@@ -1,0 +1,7 @@
+/* arr1 is valid since expression 0 is int = myint */
+let
+	var a: int := 12345
+    var b: string := "hello"
+in
+	a = 54321;
+end

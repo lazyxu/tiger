@@ -1,0 +1,50 @@
+digraph G{
+	node [shape = record,height=.1];
+	1[label="LetExp|<1>Pos|<2>Decs|<3>Body"]
+	1:1 -> 2
+	2[label="7:0"]
+	1:2 -> 3
+	3[label="DecList|<1>Head|<2>Tail"]
+	3:1 -> 4
+	4[label="TypeDec|<1>Pos"]
+	4:1 -> 5
+	5[label="3:5"]
+	3:2 -> 6
+	6[label="DecList|<1>Head|<2>Tail"]
+	6:1 -> 7
+	7[label="VarDec|<1>Pos|<2>Var|<3>Typ|<4>Init|<5>Escape"]
+	7:1 -> 8
+	8[label="5:0"]
+	7:2 -> 9
+	9[label="Symbol|<1>Name|<2>Next"]
+	9:1 -> 10
+	10[label="arr1"]
+	7:3 -> 11
+	11[label="Symbol|<1>Name|<2>Next"]
+	11:1 -> 12
+	12[label="arrtype"]
+	7:4 -> 13
+	13[label="ArrayExp|<1>Pos"]
+	13:1 -> 14
+	14[label="5:0"]
+	7:5 -> 15
+	15[label="true"]
+	1:3 -> 16
+	16[label="SeqExp|<1>Pos|<2>Oper|<3>Left|<4>Right"]
+	16:1 -> 17
+	17[label="7:0"]
+	16:2 -> 18
+	18[label="ExpList|<1>Head|<2>Tail"]
+	18:1 -> 19
+	19[label="VarExp|<1>Pos|<2>Var"]
+	19:1 -> 20
+	20[label="7:0"]
+	19:2 -> 21
+	21[label="SimpleVar|<1>Pos|<2>Var"]
+	21:1 -> 22
+	22[label="7:0"]
+	21:2 -> 23
+	23[label="Symbol|<1>Name|<2>Next"]
+	23:1 -> 24
+	24[label="arr1"]
+}

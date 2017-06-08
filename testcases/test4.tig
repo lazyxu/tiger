@@ -1,0 +1,12 @@
+let
+var a:int := 0
+var b:int := 0
+
+function nfactor(n: int, m: int, s: string): int =
+	
+		m - n + a * b
+
+in
+	nfactor(1, 2, "hello");
+end
+
