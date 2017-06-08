@@ -1,7 +1,7 @@
 package absyn
 
 import (
-	"github.com/MeteorKL/tiger_compiler/symbol"
+	"github.com/MeteorKL/tiger/symbol"
 )
 
 type Var interface {

@@ -6,8 +6,8 @@ import (
 
 	"strconv"
 
-	"github.com/MeteorKL/tiger_compiler/symbol"
-	"github.com/MeteorKL/tiger_compiler/util"
+	"github.com/MeteorKL/tiger/symbol"
+	"github.com/MeteorKL/tiger/util"
 )
 
 var node_count int

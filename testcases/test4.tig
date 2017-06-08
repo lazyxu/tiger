@@ -5,7 +5,7 @@ var b:int := 0
 function nfactor(n: int, m: int, s: string): int =
 	
 		m - n + a * b
-
+// f
 in
 	nfactor(1, 2, "hello");
 end

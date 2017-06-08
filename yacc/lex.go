@@ -3,7 +3,7 @@ package yacc
 import (
 	"fmt"
 
-	"github.com/MeteorKL/tiger_compiler/absyn"
+	"github.com/MeteorKL/tiger/absyn"
 )
 
 var EM_old_tokPos absyn.Pos
@@ -175,7 +175,26 @@ func (l *TigerLex) Lex(yylval *yySymType) int {
 		case '*':
 			tok = TIMES
 		case '/':
-			tok = DIVIDE
+			if Em_ch == '*' {
+				l.next()
+				for Em_ch != EOFCH {
+					ch := Em_ch
+					l.next()
+					if ch == '*' && Em_ch == '/' {
+						l.next()
+						return l.Lex(yylval)
+					}
+					l.Error("comment not terminated")
+				}
+			} else if Em_ch == '/' {
+				l.next()
+				for Em_ch != '\n' && Em_ch != EOFCH {
+					l.next()
+				}
+				return l.Lex(yylval)
+			} else {
+				tok = DIVIDE
+			}
 		case '=':
 			tok = EQ
 		case '<':
@@ -211,5 +230,5 @@ func (l *TigerLex) Lex(yylval *yySymType) int {
 
 func (l TigerLex) Error(s string) {
 	position := absyn.PositionFor(EM_tokPos)
-	fmt.Printf("%d:%d:syntax error: %s\n", position.Line, position.Column, s)
+	fmt.Printf("%d:%d: error: %s\n", position.Line, position.Column, s)
 }

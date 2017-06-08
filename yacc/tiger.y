@@ -1,8 +1,8 @@
 %{
 package yacc
 import(
-    "github.com/MeteorKL/tiger_compiler/absyn"
-    "github.com/MeteorKL/tiger_compiler/symbol"
+    "github.com/MeteorKL/tiger/absyn"
+    "github.com/MeteorKL/tiger/symbol"
 )
 const(
     EOF = 0

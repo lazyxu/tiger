@@ -1,6 +1,6 @@
 package absyn
 
-import "github.com/MeteorKL/tiger_compiler/symbol"
+import "github.com/MeteorKL/tiger/symbol"
 
 type Oper int
 

@@ -1,25 +1,26 @@
 package util
 
 import (
-	"fmt"
 	"os/exec"
 )
 
 func Visualization(outfile string) {
 
-	println("dot", "-Tpng", outfile, "-o", outfile+".png")
+	// println("dot", "-Tpng", outfile, "-o", outfile+".png")
 	toPng := exec.Command("dot", "-Tpng", outfile, "-o", outfile+".png")
-	out, err := toPng.CombinedOutput()
-	if err != nil {
-		println("err:", err.Error())
-	}
-	fmt.Println(string(out))
+	toPng.CombinedOutput()
+	// out, err := toPng.CombinedOutput()
+	// if err != nil {
+	// 	println("err:", err.Error())
+	// }
+	// fmt.Println(string(out))
 
-	println("open", outfile+".png")
+	// println("open", outfile+".png")
 	openPNG := exec.Command("open", outfile+".png")
-	out, err = openPNG.CombinedOutput()
-	if err != nil {
-		println("err:", err.Error())
-	}
-	fmt.Println(string(out))
+	openPNG.CombinedOutput()
+	// out, err = openPNG.CombinedOutput()
+	// if err != nil {
+	// 	println("err:", err.Error())
+	// }
+	// fmt.Println(string(out))
 }

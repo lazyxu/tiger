@@ -4,8 +4,8 @@ import (
 	"flag"
 	"testing"
 
-	"github.com/MeteorKL/tiger_compiler/absyn"
-	"github.com/MeteorKL/tiger_compiler/util"
+	"github.com/MeteorKL/tiger/absyn"
+	"github.com/MeteorKL/tiger/util"
 
 	"fmt"
 )

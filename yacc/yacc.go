@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/MeteorKL/tiger_compiler/absyn"
+	"github.com/MeteorKL/tiger/absyn"
 )
 
 func YYParse(filepath string) absyn.Exp {
