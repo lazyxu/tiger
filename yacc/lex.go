@@ -229,6 +229,11 @@ func (l *TigerLex) Lex(yylval *yySymType) int {
 }
 
 func (l TigerLex) Error(s string) {
-	position := absyn.PositionFor(EM_tokPos)
+	EM_error(EM_tokPos, s)
+}
+
+func EM_error(p absyn.Pos, s string) {
+	position := absyn.PositionFor(p)
 	fmt.Printf("%d:%d: error: %s\n", position.Line, position.Column, s)
+
 }

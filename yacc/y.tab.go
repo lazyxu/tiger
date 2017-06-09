@@ -1041,7 +1041,7 @@ yydefault:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line yacc/tiger.y:185
 		{
-			yyVAL.sym = symbol.SymbolInsert(yyDollar[1].sval)
+			yyVAL.sym = symbol.Insert(yyDollar[1].sval)
 		}
 	case 61:
 		yyDollar = yyS[yypt-1 : yypt+1]

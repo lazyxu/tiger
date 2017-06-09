@@ -182,7 +182,7 @@ fundec:     FUNCTION id LPAREN tyfields RPAREN EQ exp             {$$=&absyn.Fun
             | FUNCTION id LPAREN tyfields RPAREN COLON id EQ exp  {$$=&absyn.Fundec_{EM_tokPos, $2, $4, $7, $9}}
             ;
 
-id:         ID                            {$$=symbol.SymbolInsert($1)}
+id:         ID                            {$$=symbol.Insert($1)}
             ;
             
             /* lvalue -> id */

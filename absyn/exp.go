@@ -4,24 +4,24 @@ import "github.com/MeteorKL/tiger/symbol"
 
 type Exp interface {
 	Node
-	expNode()
+	A_exp()
 }
 
-func (*VarExp) expNode()    {}
-func (*NilExp) expNode()    {}
-func (*IntExp) expNode()    {}
-func (*StringExp) expNode() {}
-func (*CallExp) expNode()   {}
-func (*OpExp) expNode()     {}
-func (*RecordExp) expNode() {}
-func (*SeqExp) expNode()    {}
-func (*AssignExp) expNode() {}
-func (*IfExp) expNode()     {}
-func (*WhileExp) expNode()  {}
-func (*ForExp) expNode()    {}
-func (*BreakExp) expNode()  {}
-func (*LetExp) expNode()    {}
-func (*ArrayExp) expNode()  {}
+func (*VarExp) A_exp()    {}
+func (*NilExp) A_exp()    {}
+func (*IntExp) A_exp()    {}
+func (*StringExp) A_exp() {}
+func (*CallExp) A_exp()   {}
+func (*OpExp) A_exp()     {}
+func (*RecordExp) A_exp() {}
+func (*SeqExp) A_exp()    {}
+func (*AssignExp) A_exp() {}
+func (*IfExp) A_exp()     {}
+func (*WhileExp) A_exp()  {}
+func (*ForExp) A_exp()    {}
+func (*BreakExp) A_exp()  {}
+func (*LetExp) A_exp()    {}
+func (*ArrayExp) A_exp()  {}
 
 type VarExp struct {
 	Pos Pos

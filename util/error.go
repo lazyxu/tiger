@@ -5,3 +5,9 @@ func PanicErr(e error) {
 		panic(e)
 	}
 }
+
+func Assert(b bool) {
+	if !b {
+		panic("assert")
+	}
+}

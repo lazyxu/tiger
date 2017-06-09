@@ -4,12 +4,12 @@ import "github.com/MeteorKL/tiger/symbol"
 
 type Ty interface {
 	Node
-	tyNode()
+	A_ty()
 }
 
-func (*NameTy) tyNode()   {}
-func (*RecordTy) tyNode() {}
-func (*ArrayTy) tyNode()  {}
+func (*NameTy) A_ty()   {}
+func (*RecordTy) A_ty() {}
+func (*ArrayTy) A_ty()  {}
 
 type NameTy struct {
 	Pos  Pos

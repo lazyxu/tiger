@@ -19,26 +19,42 @@ go test -v -run='Test_Lex' -args ../testcases/test4.tig
 cd yacc
 go test -v -run='Test_Yacc' -args ../testcases/test4.tig
 ```
-### 1.3 代码结构
-
-* yacc
+### 1.3 代码完成情况
+* [✔︎] absyn 
+    * exp
+    * dec
+    * pos
+    * ty
+    * var
+* [✔︎] env 
+    * tenv venv
+    * entry
+* [✔︎] frame
+    * access
+    * frame 
+    * frag
+        * ProcFrag
+        * StringFrag
+* semant
+    * SEM_transProg()
+* [✔︎] symbol
+    * Symbol 符号
+* [✔︎] table
+    * Table 表
+* [✔︎] temp
+    * temp
+    * label
+* [✔︎] yacc
     * lex.go
     * tiger.y
-* symbol
-    * Symbol 符号
-    * Table 符号表
-* absyn
-    * pos.go
-    * Exp 抽象语法树的结点
-* types
-    * Entry 变量入口
-* frame
-* translate
+* [✔︎] types
+    * ty 类型
+* [✔︎] translate
     * Exp 通过方法 Ex, Cx 或 Nx 来生成具体的结点
     * Level 层
-* tree 
-    * Exp
-    * Stm ir树的结点
-* frag
-    * ProcFrag
-    * StringFrag
+    * Access
+* [✔︎] tree 
+    * exp
+    * op 
+    * stm 
+* [✔︎] util

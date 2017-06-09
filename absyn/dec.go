@@ -4,12 +4,12 @@ import "github.com/MeteorKL/tiger/symbol"
 
 type Dec interface {
 	Node
-	decNode()
+	A_dec()
 }
 
-func (*FunctionDec) decNode() {}
-func (*VarDec) decNode()      {}
-func (*TypeDec) decNode()     {}
+func (*FunctionDec) A_dec() {}
+func (*VarDec) A_dec()      {}
+func (*TypeDec) A_dec()     {}
 
 type FunctionDec struct {
 	Pos      Pos

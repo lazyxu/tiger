@@ -6,12 +6,12 @@ import (
 
 type Var interface {
 	Node
-	varNode()
+	A_var()
 }
 
-func (*SimpleVar) varNode()    {}
-func (*FieldVar) varNode()     {}
-func (*SubscriptVar) varNode() {}
+func (*SimpleVar) A_var()    {}
+func (*FieldVar) A_var()     {}
+func (*SubscriptVar) A_var() {}
 
 type SimpleVar struct {
 	Pos    Pos
