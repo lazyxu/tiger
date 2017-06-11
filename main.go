@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"os"
 
 	"github.com/MeteorKL/tiger/absyn"
+	"github.com/MeteorKL/tiger/frame"
 	"github.com/MeteorKL/tiger/semant"
+	"github.com/MeteorKL/tiger/tree"
 	"github.com/MeteorKL/tiger/util"
 	"github.com/MeteorKL/tiger/yacc"
 )
@@ -32,5 +35,31 @@ func main() {
 	absyn.PrintExp(args[1]+".ast", absyn_root)
 	util.Visualization(args[1] + ".ast")
 
-	semant.SEM_transProg(absyn_root)
+	frags := semant.SEM_transProg(absyn_root)
+
+	tree.Node_count = 1
+
+	var f *os.File
+	var err error
+	filepath := args[1] + ".ir"
+	f, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
+	util.PanicErr(err)
+	w := bufio.NewWriter(f)
+
+	_, err = w.WriteString("digraph G{\n\tnode [shape = record,height=.1];\n")
+	util.PanicErr(err)
+	for ; frags != nil; frags = frags.Tail {
+		switch frags.Head.(type) {
+		case *frame.ProcFrag_:
+			f := frags.Head.(*frame.ProcFrag_)
+			tree.PPrintStm(w, f.Body)
+		}
+	}
+
+	_, err = w.WriteString("}\n")
+	util.PanicErr(err)
+	w.Flush()
+	f.Close()
+
+	util.Visualization(args[1] + ".ir")
 }

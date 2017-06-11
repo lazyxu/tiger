@@ -303,10 +303,10 @@ func printExpList(w *bufio.Writer, expList ExpList) {
 }
 
 func PrintExp(filepath string, exp Exp) {
-	var f *os.File
-	var err error
-
-	f, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
+	if util.CheckFileExist(filepath) {
+		os.Remove(filepath)
+	}
+	f, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
 	util.PanicErr(err)
 	w := bufio.NewWriter(f)
 

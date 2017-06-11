@@ -12,7 +12,7 @@ func (*Int_) Ty_ty()    {}
 func (*String_) Ty_ty() {}
 func (*Name_) Ty_ty()   {}
 func (*Array_) Ty_ty()  {}
-func (*Void_) Ty_ty()   {}
+func (*Void_) Ty_ty()   {} // function has no return value
 
 var Tynil Nil_
 var Tyint Int_

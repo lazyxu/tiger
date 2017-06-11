@@ -3,7 +3,6 @@ package symbol
 import (
 	"bytes"
 	"fmt"
-	"reflect"
 
 	"github.com/MeteorKL/tiger/table"
 	"github.com/MeteorKL/tiger/util"
@@ -53,15 +52,10 @@ func BeginScope(t table.Table) {
 func EndScope(t table.Table) {
 	s := table.Pop(t)
 	for s != nil {
-		v := reflect.ValueOf(s).Elem().UnsafeAddr()
 		buf1 := bytes.NewBuffer(make([]byte, 0))
-		fmt.Fprintf(buf1, "%d", v)
+		fmt.Fprintf(buf1, "%d", s)
 		buf2 := bytes.NewBuffer(make([]byte, 0))
 		fmt.Fprintf(buf2, "%d", &marksym)
-		println("&marksym: ", &marksym)
-		println("v: ", v)
-		println("buf1: ", string(buf1.Bytes()))
-		println("buf2: ", string(buf2.Bytes()))
 		if string(buf1.Bytes()) == string(buf2.Bytes()) {
 			break
 		}

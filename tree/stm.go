@@ -36,7 +36,7 @@ type CJUMP_ struct {
 }
 type MOVE *MOVE_
 type MOVE_ struct {
-	Des, Src Exp
+	Dst, Src Exp
 }
 type EXP *EXP_
 type EXP_ struct {
