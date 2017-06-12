@@ -8,12 +8,13 @@ import (
 
 type Level *Level_
 type Level_ struct {
-	Parent  Level
-	Name    temp.Label
-	Frame   frame.Frame
-	Formals AccessList
+	Parent  Level       // 指向上一级的level
+	Name    temp.Label  // 这层level的标号
+	Frame   frame.Frame // 这一层的level
+	Formals AccessList  // frame中每一个参数的 access
 }
 
+// 新建一个Level,
 func NewLevel(parent Level, name temp.Label, formals util.BoolList) Level {
 	level := new(Level_)
 	level.Parent = parent

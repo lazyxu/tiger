@@ -5,7 +5,7 @@ import (
 )
 
 type Var interface {
-	Node
+	ASTNode
 	A_var()
 }
 

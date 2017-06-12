@@ -2,8 +2,10 @@ package absyn
 
 import "github.com/MeteorKL/tiger/symbol"
 
+// Oper define
 type Oper int
 
+// Op define
 const (
 	PlusOp Oper = iota
 	MinusOp
@@ -18,7 +20,7 @@ const (
 )
 
 var opnames = [...]string{
-	"+",
+	"+", // fsd
 	"-",
 	"*",
 	"/",
@@ -30,7 +32,8 @@ var opnames = [...]string{
 	">=",
 }
 
-type Node interface{}
+// 一共有 Exp, Dec, Ty, Var 四种抽象语法树的结点
+type ASTNode interface{}
 
 /* Linked lists and nodes of lists */
 
@@ -39,6 +42,8 @@ type FieldList_ struct {
 	Head Field
 	Tail FieldList
 }
+
+// Field is "id COLON id"
 type Field *Field_
 type Field_ struct {
 	Pos       Pos
@@ -50,6 +55,8 @@ type EfieldList_ struct {
 	Head Efield
 	Tail EfieldList
 }
+
+// Efield id EQ exp
 type Efield *Efield_
 type Efield_ struct {
 	Name symbol.Symbol

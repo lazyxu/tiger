@@ -17,7 +17,7 @@ const (
 
 var Absyn_root absyn.Exp
 
-//line yacc/tiger.y:15
+//line yacc/tiger.y:16
 type yySymType struct {
 	yys        int
 	ty         absyn.Ty
@@ -685,427 +685,427 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:74
+		//line yacc/tiger.y:75
 		{
 			Absyn_root = yyDollar[1].exp
 		}
 	case 2:
 		yyDollar = yyS[yypt-0 : yypt+1]
-		//line yacc/tiger.y:77
+		//line yacc/tiger.y:78
 		{
 			yyVAL.exp = nil
 		}
 	case 3:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:78
+		//line yacc/tiger.y:79
 		{
 			yyVAL.exp = yyDollar[1].exp
 		}
 	case 4:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:81
+		//line yacc/tiger.y:82
 		{
 			yyVAL.exp = &absyn.IntExp{EM_tokPos, yyDollar[1].ival}
 		}
 	case 5:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:82
+		//line yacc/tiger.y:83
 		{
 			yyVAL.exp = &absyn.StringExp{EM_tokPos, yyDollar[1].sval}
 		}
 	case 6:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:83
+		//line yacc/tiger.y:84
 		{
 			yyVAL.exp = &absyn.NilExp{EM_tokPos}
 		}
 	case 7:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:84
+		//line yacc/tiger.y:85
 		{
 			yyVAL.exp = &absyn.CallExp{EM_tokPos, yyDollar[1].sym, yyDollar[3].expList}
 		}
 	case 8:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:85
+		//line yacc/tiger.y:86
 		{
 			yyVAL.exp = &absyn.VarExp{EM_tokPos, yyDollar[1].Var}
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:86
+		//line yacc/tiger.y:87
 		{
 			yyVAL.exp = &absyn.SeqExp{EM_tokPos, yyDollar[2].expList}
 		}
 	case 10:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:87
+		//line yacc/tiger.y:88
 		{
 			yyVAL.exp = yyDollar[1].exp
 		}
 	case 11:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:88
+		//line yacc/tiger.y:89
 		{
 			yyVAL.exp = yyDollar[1].exp
 		}
 	case 12:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:89
+		//line yacc/tiger.y:90
 		{
 			yyVAL.exp = &absyn.IfExp{EM_tokPos, yyDollar[1].exp, &absyn.IntExp{EM_tokPos, 1}, yyDollar[3].exp}
 		}
 	case 13:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:90
+		//line yacc/tiger.y:91
 		{
 			yyVAL.exp = &absyn.IfExp{EM_tokPos, yyDollar[1].exp, yyDollar[3].exp, &absyn.IntExp{EM_tokPos, 0}}
 		}
 	case 14:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:91
+		//line yacc/tiger.y:92
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.LtOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:92
+		//line yacc/tiger.y:93
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.GtOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 16:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:93
+		//line yacc/tiger.y:94
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.LeOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 17:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:94
+		//line yacc/tiger.y:95
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.GeOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 18:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:95
+		//line yacc/tiger.y:96
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.PlusOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 19:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:96
+		//line yacc/tiger.y:97
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.MinusOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 20:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:97
+		//line yacc/tiger.y:98
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.TimesOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 21:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:98
+		//line yacc/tiger.y:99
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.DivideOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 22:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:99
+		//line yacc/tiger.y:100
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.EqOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 23:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:100
+		//line yacc/tiger.y:101
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.NeqOp, yyDollar[1].exp, yyDollar[3].exp}
 		}
 	case 24:
 		yyDollar = yyS[yypt-6 : yypt+1]
-		//line yacc/tiger.y:101
+		//line yacc/tiger.y:102
 		{
 			yyVAL.exp = &absyn.ArrayExp{EM_tokPos, yyDollar[1].sym, yyDollar[3].exp, yyDollar[6].exp}
 		}
 	case 25:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:102
+		//line yacc/tiger.y:103
 		{
 			yyVAL.exp = &absyn.RecordExp{EM_tokPos, yyDollar[1].sym, yyDollar[3].efieldList}
 		}
 	case 26:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:103
+		//line yacc/tiger.y:104
 		{
 			yyVAL.exp = &absyn.AssignExp{EM_tokPos, yyDollar[1].Var, yyDollar[3].exp}
 		}
 	case 27:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line yacc/tiger.y:104
+		//line yacc/tiger.y:105
 		{
 			yyVAL.exp = &absyn.OpExp{EM_tokPos, absyn.MinusOp, &absyn.IntExp{EM_tokPos, 0}, yyDollar[2].exp}
 		}
 	case 28:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:105
+		//line yacc/tiger.y:106
 		{
 			yyVAL.exp = &absyn.BreakExp{EM_tokPos}
 		}
 	case 29:
 		yyDollar = yyS[yypt-0 : yypt+1]
-		//line yacc/tiger.y:108
+		//line yacc/tiger.y:109
 		{
 			yyVAL.efieldList = nil
 		}
 	case 30:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:109
+		//line yacc/tiger.y:110
 		{
 			yyVAL.efieldList = yyDollar[1].efieldList
 		}
 	case 31:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:112
+		//line yacc/tiger.y:113
 		{
 			yyVAL.efieldList = absyn.EfieldListInsert(&absyn.Efield_{yyDollar[1].sym, yyDollar[3].exp}, nil)
 		}
 	case 32:
 		yyDollar = yyS[yypt-5 : yypt+1]
-		//line yacc/tiger.y:113
+		//line yacc/tiger.y:114
 		{
 			yyVAL.efieldList = absyn.EfieldListInsert(&absyn.Efield_{yyDollar[1].sym, yyDollar[3].exp}, yyDollar[5].efieldList)
 		}
 	case 33:
 		yyDollar = yyS[yypt-5 : yypt+1]
-		//line yacc/tiger.y:116
+		//line yacc/tiger.y:117
 		{
 			yyVAL.exp = &absyn.LetExp{EM_tokPos, yyDollar[2].decList, &absyn.SeqExp{EM_tokPos, yyDollar[4].expList}}
 		}
 	case 34:
 		yyDollar = yyS[yypt-0 : yypt+1]
-		//line yacc/tiger.y:119
+		//line yacc/tiger.y:120
 		{
 			yyVAL.expList = nil
 		}
 	case 35:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:120
+		//line yacc/tiger.y:121
 		{
 			yyVAL.expList = yyDollar[1].expList
 		}
 	case 36:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:123
+		//line yacc/tiger.y:124
 		{
 			yyVAL.expList = absyn.ExpListInsert(yyDollar[1].exp, nil)
 		}
 	case 37:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:124
+		//line yacc/tiger.y:125
 		{
 			yyVAL.expList = absyn.ExpListInsert(yyDollar[1].exp, yyDollar[3].expList)
 		}
 	case 38:
 		yyDollar = yyS[yypt-0 : yypt+1]
-		//line yacc/tiger.y:128
+		//line yacc/tiger.y:129
 		{
 			yyVAL.decList = nil
 		}
 	case 39:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line yacc/tiger.y:129
+		//line yacc/tiger.y:130
 		{
 			yyVAL.decList = absyn.DecListInsert(yyDollar[1].dec, yyDollar[2].decList)
 		}
 	case 40:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:135
+		//line yacc/tiger.y:136
 		{
 			yyVAL.dec = yyDollar[1].dec
 		}
 	case 41:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:136
+		//line yacc/tiger.y:137
 		{
 			yyVAL.dec = yyDollar[1].dec
 		}
 	case 42:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:137
+		//line yacc/tiger.y:138
 		{
 			yyVAL.dec = yyDollar[1].dec
 		}
 	case 43:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:140
+		//line yacc/tiger.y:141
 		{
 			yyVAL.dec = &absyn.TypeDec{EM_tokPos, absyn.NametyListInsert(yyDollar[1].namety, nil)}
 		}
 	case 44:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line yacc/tiger.y:141
+		//line yacc/tiger.y:142
 		{
 			yyVAL.dec = &absyn.TypeDec{EM_tokPos, absyn.NametyListInsert(yyDollar[1].namety, yyDollar[2].dec.(*absyn.TypeDec).Type)}
 		}
 	case 45:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:145
+		//line yacc/tiger.y:146
 		{
 			yyVAL.namety = &absyn.Namety_{yyDollar[2].sym, yyDollar[4].ty}
 		}
 	case 46:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:151
+		//line yacc/tiger.y:152
 		{
 			yyVAL.ty = &absyn.NameTy{EM_tokPos, yyDollar[1].sym}
 		}
 	case 47:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:152
+		//line yacc/tiger.y:153
 		{
 			yyVAL.ty = &absyn.RecordTy{EM_tokPos, yyDollar[2].fieldList}
 		}
 	case 48:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:153
+		//line yacc/tiger.y:154
 		{
 			yyVAL.ty = &absyn.ArrayTy{EM_tokPos, yyDollar[3].sym}
 		}
 	case 49:
 		yyDollar = yyS[yypt-0 : yypt+1]
-		//line yacc/tiger.y:158
+		//line yacc/tiger.y:159
 		{
 			yyVAL.fieldList = nil
 		}
 	case 50:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:159
+		//line yacc/tiger.y:160
 		{
 			yyVAL.fieldList = yyDollar[1].fieldList
 		}
 	case 51:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:162
+		//line yacc/tiger.y:163
 		{
 			yyVAL.fieldList = absyn.FieldListInsert(yyDollar[1].field, nil)
 		}
 	case 52:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:163
+		//line yacc/tiger.y:164
 		{
 			yyVAL.fieldList = absyn.FieldListInsert(yyDollar[1].field, yyDollar[3].fieldList)
 		}
 	case 53:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:166
+		//line yacc/tiger.y:167
 		{
 			yyVAL.field = &absyn.Field_{EM_tokPos, yyDollar[1].sym, yyDollar[3].sym, true}
 		}
 	case 54:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:171
+		//line yacc/tiger.y:172
 		{
 			yyVAL.dec = &absyn.VarDec{EM_tokPos, yyDollar[2].sym, nil, yyDollar[4].exp, true}
 		}
 	case 55:
 		yyDollar = yyS[yypt-6 : yypt+1]
-		//line yacc/tiger.y:172
+		//line yacc/tiger.y:173
 		{
 			yyVAL.dec = &absyn.VarDec{EM_tokPos, yyDollar[2].sym, yyDollar[4].sym, yyDollar[6].exp, true}
 		}
 	case 56:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:175
+		//line yacc/tiger.y:176
 		{
 			yyVAL.dec = &absyn.FunctionDec{EM_tokPos, absyn.FundecListInsert(yyDollar[1].fundec, nil)}
 		}
 	case 57:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line yacc/tiger.y:176
+		//line yacc/tiger.y:177
 		{
 			yyVAL.dec = &absyn.FunctionDec{EM_tokPos, absyn.FundecListInsert(yyDollar[1].fundec, yyDollar[2].dec.(*absyn.FunctionDec).Function)}
 		}
 	case 58:
 		yyDollar = yyS[yypt-7 : yypt+1]
-		//line yacc/tiger.y:181
+		//line yacc/tiger.y:182
 		{
 			yyVAL.fundec = &absyn.Fundec_{EM_tokPos, yyDollar[2].sym, yyDollar[4].fieldList, nil, yyDollar[7].exp}
 		}
 	case 59:
 		yyDollar = yyS[yypt-9 : yypt+1]
-		//line yacc/tiger.y:182
+		//line yacc/tiger.y:183
 		{
 			yyVAL.fundec = &absyn.Fundec_{EM_tokPos, yyDollar[2].sym, yyDollar[4].fieldList, yyDollar[7].sym, yyDollar[9].exp}
 		}
 	case 60:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:185
+		//line yacc/tiger.y:186
 		{
 			yyVAL.sym = symbol.Insert(yyDollar[1].sval)
 		}
 	case 61:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:191
+		//line yacc/tiger.y:192
 		{
 			yyVAL.Var = &absyn.SimpleVar{EM_tokPos, yyDollar[1].sym}
 		}
 	case 62:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:192
+		//line yacc/tiger.y:193
 		{
 			yyVAL.Var = &absyn.FieldVar{EM_tokPos, yyDollar[1].Var, yyDollar[3].sym}
 		}
 	case 63:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:193
+		//line yacc/tiger.y:194
 		{
 			yyVAL.Var = &absyn.SubscriptVar{EM_tokPos, &absyn.SimpleVar{EM_tokPos, yyDollar[1].sym}, yyDollar[3].exp}
 		}
 	case 64:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:194
+		//line yacc/tiger.y:195
 		{
 			yyVAL.Var = &absyn.SubscriptVar{EM_tokPos, yyDollar[1].Var, yyDollar[3].exp}
 		}
 	case 65:
 		yyDollar = yyS[yypt-0 : yypt+1]
-		//line yacc/tiger.y:197
+		//line yacc/tiger.y:198
 		{
 			yyVAL.expList = nil
 		}
 	case 66:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line yacc/tiger.y:198
+		//line yacc/tiger.y:199
 		{
 			yyVAL.expList = absyn.ExpListInsert(yyDollar[1].exp, nil)
 		}
 	case 67:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line yacc/tiger.y:199
+		//line yacc/tiger.y:200
 		{
 			yyVAL.expList = absyn.ExpListInsert(yyDollar[1].exp, yyDollar[3].expList)
 		}
 	case 68:
 		yyDollar = yyS[yypt-6 : yypt+1]
-		//line yacc/tiger.y:202
+		//line yacc/tiger.y:203
 		{
 			yyVAL.exp = &absyn.IfExp{EM_tokPos, yyDollar[2].exp, yyDollar[4].exp, yyDollar[6].exp}
 		}
 	case 69:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:203
+		//line yacc/tiger.y:204
 		{
 			yyVAL.exp = &absyn.IfExp{EM_tokPos, yyDollar[2].exp, yyDollar[4].exp, nil}
 		}
 	case 70:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line yacc/tiger.y:204
+		//line yacc/tiger.y:205
 		{
 			yyVAL.exp = &absyn.WhileExp{EM_tokPos, yyDollar[2].exp, yyDollar[4].exp}
 		}
 	case 71:
 		yyDollar = yyS[yypt-8 : yypt+1]
-		//line yacc/tiger.y:205
+		//line yacc/tiger.y:206
 		{
 			yyVAL.exp = &absyn.ForExp{EM_tokPos, yyDollar[2].sym, yyDollar[4].exp, yyDollar[6].exp, yyDollar[8].exp, true}
 		}

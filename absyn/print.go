@@ -23,12 +23,14 @@ func printSymbol(w *bufio.Writer, sym symbol.Symbol) {
 	id := node_count
 	node_count++
 	w.WriteString("\t" + strconv.Itoa(id) + "[label=\"Symbol|<1>Name|<2>Next\"]\n")
-	w.WriteString("\t" + strconv.Itoa(id) + ":1 -> " + strconv.Itoa(node_count) + "\n")
-	w.WriteString("\t" + strconv.Itoa(node_count) + "[label=\"" + sym.Name + "\"]\n")
-	node_count++
-	if sym.Next != nil {
-		w.WriteString("\t" + strconv.Itoa(id) + ":2 -> " + strconv.Itoa(node_count) + "\n")
-		printSymbol(w, sym.Next)
+	if sym != nil {
+		w.WriteString("\t" + strconv.Itoa(id) + ":1 -> " + strconv.Itoa(node_count) + "\n")
+		w.WriteString("\t" + strconv.Itoa(node_count) + "[label=\"" + sym.Name + "\"]\n")
+		node_count++
+		if sym.Next != nil {
+			w.WriteString("\t" + strconv.Itoa(id) + ":2 -> " + strconv.Itoa(node_count) + "\n")
+			printSymbol(w, sym.Next)
+		}
 	}
 }
 
@@ -61,11 +63,13 @@ func printFieldList(w *bufio.Writer, fieldList FieldList) {
 	id := node_count
 	node_count++
 	w.WriteString("\t" + strconv.Itoa(id) + "[label=\"FieldList|<1>Head|<2>Tail\"]\n")
-	w.WriteString("\t" + strconv.Itoa(id) + ":1 -> " + strconv.Itoa(node_count) + "\n")
-	printField(w, fieldList.Head)
-	if fieldList.Tail != nil {
-		w.WriteString("\t" + strconv.Itoa(id) + ":2 -> " + strconv.Itoa(node_count) + "\n")
-		printFieldList(w, fieldList.Tail)
+	if fieldList != nil {
+		w.WriteString("\t" + strconv.Itoa(id) + ":1 -> " + strconv.Itoa(node_count) + "\n")
+		printField(w, fieldList.Head)
+		if fieldList.Tail != nil {
+			w.WriteString("\t" + strconv.Itoa(id) + ":2 -> " + strconv.Itoa(node_count) + "\n")
+			printFieldList(w, fieldList.Tail)
+		}
 	}
 }
 
@@ -294,11 +298,13 @@ func printExpList(w *bufio.Writer, expList ExpList) {
 	id := node_count
 	node_count++
 	w.WriteString("\t" + strconv.Itoa(id) + "[label=\"ExpList|<1>Head|<2>Tail\"]\n")
-	w.WriteString("\t" + strconv.Itoa(id) + ":1 -> " + strconv.Itoa(node_count) + "\n")
-	printExp(w, expList.Head)
-	if expList.Tail != nil {
-		w.WriteString("\t" + strconv.Itoa(id) + ":2 -> " + strconv.Itoa(node_count) + "\n")
-		printExpList(w, expList.Tail)
+	if expList != nil {
+		w.WriteString("\t" + strconv.Itoa(id) + ":1 -> " + strconv.Itoa(node_count) + "\n")
+		printExp(w, expList.Head)
+		if expList.Tail != nil {
+			w.WriteString("\t" + strconv.Itoa(id) + ":2 -> " + strconv.Itoa(node_count) + "\n")
+			printExpList(w, expList.Tail)
+		}
 	}
 }
 

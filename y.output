@@ -14,7 +14,7 @@ state 0
 	LET  shift 18
 	IF  shift 15
 	NIL  shift 6
-	.  reduce 2 (src line 77)
+	.  reduce 2 (src line 78)
 
 	id  goto 7
 	lvalue  goto 8
@@ -34,7 +34,7 @@ state 1
 state 2
 	program:  root.    (1)
 
-	.  reduce 1 (src line 74)
+	.  reduce 1 (src line 75)
 
 
 state 3
@@ -64,25 +64,25 @@ state 3
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 3 (src line 78)
+	.  reduce 3 (src line 79)
 
 
 state 4
 	exp:  INT.    (4)
 
-	.  reduce 4 (src line 81)
+	.  reduce 4 (src line 82)
 
 
 state 5
 	exp:  STRING.    (5)
 
-	.  reduce 5 (src line 82)
+	.  reduce 5 (src line 83)
 
 
 state 6
 	exp:  NIL.    (6)
 
-	.  reduce 6 (src line 83)
+	.  reduce 6 (src line 84)
 
 
 state 7
@@ -95,7 +95,7 @@ state 7
 	LPAREN  shift 31
 	LBRACK  shift 32
 	LBRACE  shift 33
-	.  reduce 61 (src line 191)
+	.  reduce 61 (src line 192)
 
 
 state 8
@@ -107,7 +107,7 @@ state 8
 	LBRACK  shift 36
 	DOT  shift 35
 	ASSIGN  shift 34
-	.  reduce 8 (src line 85)
+	.  reduce 8 (src line 86)
 
 
 state 9
@@ -125,7 +125,7 @@ state 9
 	LET  shift 18
 	IF  shift 15
 	NIL  shift 6
-	.  reduce 65 (src line 197)
+	.  reduce 65 (src line 198)
 
 	id  goto 7
 	lvalue  goto 8
@@ -137,13 +137,13 @@ state 9
 state 10
 	exp:  cond.    (10)
 
-	.  reduce 10 (src line 87)
+	.  reduce 10 (src line 88)
 
 
 state 11
 	exp:  let.    (11)
 
-	.  reduce 11 (src line 88)
+	.  reduce 11 (src line 89)
 
 
 state 12
@@ -171,13 +171,13 @@ state 12
 state 13
 	exp:  BREAK.    (28)
 
-	.  reduce 28 (src line 105)
+	.  reduce 28 (src line 106)
 
 
 state 14
 	id:  ID.    (60)
 
-	.  reduce 60 (src line 185)
+	.  reduce 60 (src line 186)
 
 
 state 15
@@ -240,7 +240,7 @@ state 18
 	FUNCTION  shift 52
 	VAR  shift 49
 	TYPE  shift 51
-	.  reduce 38 (src line 128)
+	.  reduce 38 (src line 129)
 
 	tydec  goto 48
 	dec  goto 44
@@ -529,7 +529,7 @@ state 31
 	LET  shift 18
 	IF  shift 15
 	NIL  shift 6
-	.  reduce 34 (src line 119)
+	.  reduce 34 (src line 120)
 
 	id  goto 7
 	lvalue  goto 8
@@ -567,7 +567,7 @@ state 33
 	recordlist: .    (29)
 
 	ID  shift 14
-	.  reduce 29 (src line 108)
+	.  reduce 29 (src line 109)
 
 	id  goto 71
 	recordlist  goto 69
@@ -661,7 +661,7 @@ state 38
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 66 (src line 198)
+	.  reduce 66 (src line 199)
 
 
 state 39
@@ -679,7 +679,7 @@ state 39
 	exp:  exp.NEQ exp 
 	exp:  MINUS exp.    (27)
 
-	.  reduce 27 (src line 104)
+	.  reduce 27 (src line 105)
 
 
 state 40
@@ -766,7 +766,7 @@ state 44
 	FUNCTION  shift 52
 	VAR  shift 49
 	TYPE  shift 51
-	.  reduce 38 (src line 128)
+	.  reduce 38 (src line 129)
 
 	tydec  goto 48
 	dec  goto 44
@@ -779,19 +779,19 @@ state 44
 state 45
 	dec:  tydecs.    (40)
 
-	.  reduce 40 (src line 135)
+	.  reduce 40 (src line 136)
 
 
 state 46
 	dec:  vardec.    (41)
 
-	.  reduce 41 (src line 136)
+	.  reduce 41 (src line 137)
 
 
 state 47
 	dec:  fundecs.    (42)
 
-	.  reduce 42 (src line 137)
+	.  reduce 42 (src line 138)
 
 
 state 48
@@ -799,7 +799,7 @@ state 48
 	tydecs:  tydec.tydecs 
 
 	TYPE  shift 51
-	.  reduce 43 (src line 140)
+	.  reduce 43 (src line 141)
 
 	tydec  goto 48
 	tydecs  goto 82
@@ -818,7 +818,7 @@ state 50
 	fundecs:  fundec.fundecs 
 
 	FUNCTION  shift 52
-	.  reduce 56 (src line 175)
+	.  reduce 56 (src line 176)
 
 	fundecs  goto 84
 	fundec  goto 50
@@ -866,7 +866,7 @@ state 53
 	GT  shift 22
 	GE  shift 24
 	AND  shift 20
-	.  reduce 12 (src line 89)
+	.  reduce 12 (src line 90)
 
 
 state 54
@@ -894,7 +894,7 @@ state 54
 	LE  shift 23
 	GT  shift 22
 	GE  shift 24
-	.  reduce 13 (src line 90)
+	.  reduce 13 (src line 91)
 
 
 state 55
@@ -922,7 +922,7 @@ state 55
 	LE  error
 	GT  error
 	GE  error
-	.  reduce 14 (src line 91)
+	.  reduce 14 (src line 92)
 
 
 state 56
@@ -950,7 +950,7 @@ state 56
 	LE  error
 	GT  error
 	GE  error
-	.  reduce 15 (src line 92)
+	.  reduce 15 (src line 93)
 
 
 state 57
@@ -978,7 +978,7 @@ state 57
 	LE  error
 	GT  error
 	GE  error
-	.  reduce 16 (src line 93)
+	.  reduce 16 (src line 94)
 
 
 state 58
@@ -1006,7 +1006,7 @@ state 58
 	LE  error
 	GT  error
 	GE  error
-	.  reduce 17 (src line 94)
+	.  reduce 17 (src line 95)
 
 
 state 59
@@ -1026,7 +1026,7 @@ state 59
 
 	TIMES  shift 27
 	DIVIDE  shift 28
-	.  reduce 18 (src line 95)
+	.  reduce 18 (src line 96)
 
 
 state 60
@@ -1046,7 +1046,7 @@ state 60
 
 	TIMES  shift 27
 	DIVIDE  shift 28
-	.  reduce 19 (src line 96)
+	.  reduce 19 (src line 97)
 
 
 state 61
@@ -1064,7 +1064,7 @@ state 61
 	exp:  exp.EQ exp 
 	exp:  exp.NEQ exp 
 
-	.  reduce 20 (src line 97)
+	.  reduce 20 (src line 98)
 
 
 state 62
@@ -1082,7 +1082,7 @@ state 62
 	exp:  exp.EQ exp 
 	exp:  exp.NEQ exp 
 
-	.  reduce 21 (src line 98)
+	.  reduce 21 (src line 99)
 
 
 state 63
@@ -1110,7 +1110,7 @@ state 63
 	LE  error
 	GT  error
 	GE  error
-	.  reduce 22 (src line 99)
+	.  reduce 22 (src line 100)
 
 
 state 64
@@ -1138,7 +1138,7 @@ state 64
 	LE  error
 	GT  error
 	GE  error
-	.  reduce 23 (src line 100)
+	.  reduce 23 (src line 101)
 
 
 state 65
@@ -1151,7 +1151,7 @@ state 65
 state 66
 	arglist:  arg.    (35)
 
-	.  reduce 35 (src line 120)
+	.  reduce 35 (src line 121)
 
 
 state 67
@@ -1183,7 +1183,7 @@ state 67
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 36 (src line 123)
+	.  reduce 36 (src line 124)
 
 
 state 68
@@ -1228,7 +1228,7 @@ state 69
 state 70
 	recordlist:  record.    (30)
 
-	.  reduce 30 (src line 109)
+	.  reduce 30 (src line 110)
 
 
 state 71
@@ -1266,13 +1266,13 @@ state 72
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 26 (src line 103)
+	.  reduce 26 (src line 104)
 
 
 state 73
 	lvalue:  lvalue DOT id.    (62)
 
-	.  reduce 62 (src line 192)
+	.  reduce 62 (src line 193)
 
 
 state 74
@@ -1309,7 +1309,7 @@ state 74
 state 75
 	exp:  LPAREN explst RPAREN.    (9)
 
-	.  reduce 9 (src line 86)
+	.  reduce 9 (src line 87)
 
 
 state 76
@@ -1327,7 +1327,7 @@ state 76
 	LET  shift 18
 	IF  shift 15
 	NIL  shift 6
-	.  reduce 65 (src line 197)
+	.  reduce 65 (src line 198)
 
 	id  goto 7
 	lvalue  goto 8
@@ -1418,7 +1418,7 @@ state 80
 	LET  shift 18
 	IF  shift 15
 	NIL  shift 6
-	.  reduce 65 (src line 197)
+	.  reduce 65 (src line 198)
 
 	id  goto 7
 	lvalue  goto 8
@@ -1430,13 +1430,13 @@ state 80
 state 81
 	decs:  dec decs.    (39)
 
-	.  reduce 39 (src line 129)
+	.  reduce 39 (src line 130)
 
 
 state 82
 	tydecs:  tydec tydecs.    (44)
 
-	.  reduce 44 (src line 141)
+	.  reduce 44 (src line 142)
 
 
 state 83
@@ -1451,7 +1451,7 @@ state 83
 state 84
 	fundecs:  fundec fundecs.    (57)
 
-	.  reduce 57 (src line 176)
+	.  reduce 57 (src line 177)
 
 
 state 85
@@ -1472,7 +1472,7 @@ state 86
 state 87
 	exp:  id LPAREN arglist RPAREN.    (7)
 
-	.  reduce 7 (src line 84)
+	.  reduce 7 (src line 85)
 
 
 state 88
@@ -1503,13 +1503,13 @@ state 89
 	lvalue:  id LBRACK exp RBRACK.    (63)
 
 	OF  shift 103
-	.  reduce 63 (src line 193)
+	.  reduce 63 (src line 194)
 
 
 state 90
 	exp:  id LBRACE recordlist RBRACE.    (25)
 
-	.  reduce 25 (src line 102)
+	.  reduce 25 (src line 103)
 
 
 state 91
@@ -1538,13 +1538,13 @@ state 91
 state 92
 	lvalue:  lvalue LBRACK exp RBRACK.    (64)
 
-	.  reduce 64 (src line 194)
+	.  reduce 64 (src line 195)
 
 
 state 93
 	explst:  exp SEMICOLON explst.    (67)
 
-	.  reduce 67 (src line 199)
+	.  reduce 67 (src line 200)
 
 
 state 94
@@ -1576,7 +1576,7 @@ state 94
 	AND  shift 20
 	OR  shift 19
 	ELSE  shift 105
-	.  reduce 69 (src line 203)
+	.  reduce 69 (src line 204)
 
 
 state 95
@@ -1606,7 +1606,7 @@ state 95
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 70 (src line 204)
+	.  reduce 70 (src line 205)
 
 
 state 96
@@ -1694,7 +1694,7 @@ state 101
 	tyfields: .    (49)
 
 	ID  shift 14
-	.  reduce 49 (src line 158)
+	.  reduce 49 (src line 159)
 
 	id  goto 117
 	tyfield  goto 116
@@ -1704,7 +1704,7 @@ state 101
 state 102
 	arg:  exp COMMA arg.    (37)
 
-	.  reduce 37 (src line 124)
+	.  reduce 37 (src line 125)
 
 
 state 103
@@ -1758,7 +1758,7 @@ state 104
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 31 (src line 112)
+	.  reduce 31 (src line 113)
 
 
 state 105
@@ -1808,7 +1808,7 @@ state 106
 state 107
 	let:  LET decs IN explst END.    (33)
 
-	.  reduce 33 (src line 116)
+	.  reduce 33 (src line 117)
 
 
 state 108
@@ -1838,7 +1838,7 @@ state 108
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 54 (src line 171)
+	.  reduce 54 (src line 172)
 
 
 state 109
@@ -1851,13 +1851,13 @@ state 109
 state 110
 	tydec:  TYPE id EQ ty.    (45)
 
-	.  reduce 45 (src line 145)
+	.  reduce 45 (src line 146)
 
 
 state 111
 	ty:  id.    (46)
 
-	.  reduce 46 (src line 151)
+	.  reduce 46 (src line 152)
 
 
 state 112
@@ -1865,7 +1865,7 @@ state 112
 	tyfields: .    (49)
 
 	ID  shift 14
-	.  reduce 49 (src line 158)
+	.  reduce 49 (src line 159)
 
 	id  goto 117
 	tyfield  goto 116
@@ -1890,7 +1890,7 @@ state 114
 state 115
 	tyfields:  ty_field.    (50)
 
-	.  reduce 50 (src line 159)
+	.  reduce 50 (src line 160)
 
 
 state 116
@@ -1898,7 +1898,7 @@ state 116
 	ty_field:  tyfield.COMMA ty_field 
 
 	COMMA  shift 126
-	.  reduce 51 (src line 162)
+	.  reduce 51 (src line 163)
 
 
 state 117
@@ -1935,7 +1935,7 @@ state 118
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 24 (src line 101)
+	.  reduce 24 (src line 102)
 
 
 state 119
@@ -1974,7 +1974,7 @@ state 120
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 68 (src line 202)
+	.  reduce 68 (src line 203)
 
 
 state 121
@@ -2075,7 +2075,7 @@ state 127
 state 128
 	record:  id EQ exp COMMA record.    (32)
 
-	.  reduce 32 (src line 113)
+	.  reduce 32 (src line 114)
 
 
 state 129
@@ -2127,19 +2127,19 @@ state 130
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 55 (src line 172)
+	.  reduce 55 (src line 173)
 
 
 state 131
 	ty:  LBRACE tyfields RBRACE.    (47)
 
-	.  reduce 47 (src line 152)
+	.  reduce 47 (src line 153)
 
 
 state 132
 	ty:  ARRAY OF id.    (48)
 
-	.  reduce 48 (src line 153)
+	.  reduce 48 (src line 154)
 
 
 state 133
@@ -2175,13 +2175,13 @@ state 134
 state 135
 	ty_field:  tyfield COMMA ty_field.    (52)
 
-	.  reduce 52 (src line 163)
+	.  reduce 52 (src line 164)
 
 
 state 136
 	tyfield:  id COLON id.    (53)
 
-	.  reduce 53 (src line 166)
+	.  reduce 53 (src line 167)
 
 
 state 137
@@ -2211,7 +2211,7 @@ state 137
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 71 (src line 205)
+	.  reduce 71 (src line 206)
 
 
 state 138
@@ -2241,7 +2241,7 @@ state 138
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 58 (src line 181)
+	.  reduce 58 (src line 182)
 
 
 state 139
@@ -2300,7 +2300,7 @@ state 141
 	GE  shift 24
 	AND  shift 20
 	OR  shift 19
-	.  reduce 59 (src line 182)
+	.  reduce 59 (src line 183)
 
 
 51 terminals, 24 nonterminals

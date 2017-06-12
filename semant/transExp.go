@@ -199,56 +199,29 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		test_exp := e.Test
 		then_exp := e.Then
 		else_exp := e.Else
-		if test_exp, ok := test_exp.(*absyn.IfExp); ok {
-			thenExpTy = transExp(level, breakk, venv, tenv, then_exp)
-			if else_exp != nil {
-				elseExpTy = transExp(level, breakk, venv, tenv, else_exp)
-			}
-			if intExp, ok := test_exp.Then.(*absyn.IntExp); ok && intExp.Int == 1 {
-				single_test := transExp(level, breakk, venv, tenv, test_exp.Else) //single test
-				newtest := &absyn.IfExp{test_exp.Pos, test_exp.Test, then_exp, else_exp}
-				multi_test := transExp(level, breakk, venv, tenv, newtest) //single test
-				return expTy{translate.IfExp(single_test.exp, thenExpTy.exp, multi_test.exp), thenExpTy.ty}
-			} else if intExp, ok := test_exp.Then.(*absyn.IntExp); ok && intExp.Int == 1 {
-				single_test := transExp(level, breakk, venv, tenv, test_exp.Then) //single test
-				newtest := &absyn.IfExp{test_exp.Pos, test_exp.Test, then_exp, else_exp}
-				multi_test := transExp(level, breakk, venv, tenv, newtest) //single test
-				return expTy{translate.IfExp(single_test.exp, multi_test.exp, elseExpTy.exp), elseExpTy.ty}
-			}
-		} else {
-			access := translate.AllocLocal(level, false)
-			tmp := translate.SimpleVar(access, level)
-			assing_true := translate.AssignExp(tmp, translate.IntExp(1))
-			assing_false := translate.AssignExp(tmp, translate.IntExp(0))
-			if else_exp != nil {
-				if intExp, ok := then_exp.(*absyn.IntExp); ok && intExp.Int == 1 {
-					testExpTy = transExp(level, breakk, venv, tenv, test_exp) //single test
-					thenExpTy = transExp(level, breakk, venv, tenv, then_exp) //single test
-					elseExpTy = transExp(level, breakk, venv, tenv, else_exp)
-					return expTy{translate.EseqExp(
-						translate.IfExp(testExpTy.exp, assing_true,
-							translate.IfExp(elseExpTy.exp, assing_true, assing_false)), tmp), thenExpTy.ty}
-				} else if intExp, ok := else_exp.(*absyn.IntExp); ok && intExp.Int == 1 {
-					testExpTy = transExp(level, breakk, venv, tenv, test_exp) //single test
-					thenExpTy = transExp(level, breakk, venv, tenv, then_exp) //single test
-					elseExpTy = transExp(level, breakk, venv, tenv, else_exp)
-					return expTy{translate.EseqExp(
-						translate.IfExp(testExpTy.exp,
-							translate.IfExp(thenExpTy.exp, assing_true, assing_false), assing_false), tmp), elseExpTy.ty}
-				}
-
-			}
-			testExpTy = transExp(level, breakk, venv, tenv, test_exp)
-			thenExpTy = transExp(level, breakk, venv, tenv, then_exp)
-			if else_exp != nil {
-				elseExpTy = transExp(level, breakk, venv, tenv, else_exp)
-				if _, ok := testExpTy.ty.(*types.Int_); !ok {
-					yacc.EM_error(e.Pos, "Test is required to be int type.")
-					return expTy{translate.NoExp(), &types.Tyvoid}
-				}
-			}
-			return expTy{translate.IfExp(testExpTy.exp, thenExpTy.exp, elseExpTy.exp), thenExpTy.ty}
+		// access := translate.AllocLocal(level, false)
+		// tmp := translate.SimpleVar(access, level)
+		// assing_true := translate.AssignExp(tmp, translate.IntExp(1))
+		// assing_false := translate.AssignExp(tmp, translate.IntExp(0))
+		testExpTy = transExp(level, breakk, venv, tenv, test_exp)
+		thenExpTy = transExp(level, breakk, venv, tenv, then_exp)
+		if _, ok := testExpTy.ty.(*types.Int_); !ok {
+			yacc.EM_error(e.Pos, "Test is required to be int type.")
+			return expTy{translate.NoExp(), &types.Tyvoid}
 		}
+		if else_exp == nil {
+			if _, ok := thenExpTy.ty.(*types.Void_); !ok {
+				yacc.EM_error(e.Pos, "IF-ELSE: else exp should be void.")
+				return expTy{translate.NoExp(), &types.Tyvoid}
+			}
+			return expTy{translate.IfExp(testExpTy.exp, thenExpTy.exp, nil), &types.Tyvoid}
+		}
+		elseExpTy = transExp(level, breakk, venv, tenv, else_exp)
+		if !equalTy(thenExpTy.ty, elseExpTy.ty, e.Pos) {
+			yacc.EM_error(e.Pos, "Then exp type and else exp type does not match.")
+			return expTy{translate.NoExp(), &types.Tyvoid}
+		}
+		return expTy{translate.IfExp(testExpTy.exp, thenExpTy.exp, elseExpTy.exp), thenExpTy.ty}
 	case *absyn.WhileExp:
 		println("WhileExp")
 		e := e.(*absyn.WhileExp)

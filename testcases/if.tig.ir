@@ -1,0 +1,116 @@
+digraph G{
+	node [shape = record,height=.1];
+	1[label="EXP|<1>exp"]
+	1:1 -> 2
+	2[label="ESEQ|<1>stm|<2>exp"]
+	2:1 -> 3
+	3[label="EXP|<1>exp"]
+	3:1 -> 4
+	4[label="ESEQ|<1>stm|<2>exp"]
+	4:1 -> 5
+	5[label="MOVE|<1>dst|<2>src"]
+	5:1 -> 6
+	6[label="MEM"]
+	6 -> 7
+	7[label="BINOP|<1>op|<2>left|<3>right"]
+	7:1 -> 8
+	8[label="PLUS"]
+	7:2 -> 9
+	9[label="MEM"]
+	9 -> 10
+	10[label="BINOP|<1>op|<2>left|<3>right"]
+	10:1 -> 11
+	11[label="PLUS"]
+	10:2 -> 12
+	12[label="TEMP"]
+	12 -> 13
+	13[label="0"]
+	10:3 -> 14
+	14[label="CONST"]
+	14 -> 15
+	15[label="4"]
+	7:3 -> 16
+	16[label="CONST"]
+	16 -> 17
+	17[label="-8"]
+	5:2 -> 18
+	18[label="CONST"]
+	18 -> 19
+	19[label="0"]
+	4:2 -> 20
+	20[label="CONST"]
+	20 -> 21
+	21[label="0"]
+	2:2 -> 22
+	22[label="ESEQ|<1>stm|<2>exp"]
+	22:1 -> 23
+	23[label="SEQ|<1>left|<2>right"]
+	23:1 -> 24
+	24[label="CJUMP|<1>op|<2>left|<3>right|<4>true|<5>false"]
+	24:1 -> 25
+	25[label="EQ"]
+	24:2 -> 26
+	26[label="CONST"]
+	26 -> 27
+	27[label="0"]
+	24:3 -> 28
+	28[label="CONST"]
+	28 -> 29
+	29[label="0"]
+	24:4 -> 30
+	30[label="L11"]
+	24:5 -> 31
+	31[label="L12"]
+	23:2 -> 32
+	32[label="SEQ|<1>left|<2>right"]
+	32:1 -> 33
+	33[label="LABEL"]
+	33 -> 34
+	34[label="L11"]
+	32:2 -> 35
+	35[label="SEQ|<1>left|<2>right"]
+	35:1 -> 36
+	36[label="EXP|<1>exp"]
+	36:1 -> 37
+	37[label="CONST"]
+	37 -> 38
+	38[label="1"]
+	35:2 -> 39
+	39[label="SEQ|<1>left|<2>right"]
+	39:1 -> 40
+	40[label="JUMP|<1>exp"]
+	40:1 -> 41
+	41[label="NAME"]
+	41 -> 42
+	42[label="L13"]
+	39:2 -> 43
+	43[label="SEQ|<1>left|<2>right"]
+	43:1 -> 44
+	44[label="LABEL"]
+	44 -> 45
+	45[label="L12"]
+	43:2 -> 46
+	46[label="SEQ|<1>left|<2>right"]
+	46:1 -> 47
+	47[label="EXP|<1>exp"]
+	47:1 -> 48
+	48[label="CONST"]
+	48 -> 49
+	49[label="2"]
+	46:2 -> 50
+	50[label="SEQ|<1>left|<2>right"]
+	50:1 -> 51
+	51[label="JUMP|<1>exp"]
+	51:1 -> 52
+	52[label="NAME"]
+	52 -> 53
+	53[label="L13"]
+	50:2 -> 54
+	54[label="LABEL"]
+	54 -> 55
+	55[label="L13"]
+	22:2 -> 56
+	56[label="CONST"]
+	56 -> 57
+	57[label="0"]
+}

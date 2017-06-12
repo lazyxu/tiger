@@ -12,6 +12,7 @@ import (
 	"github.com/MeteorKL/tiger/yacc"
 )
 
+//go doc -u xxx 查看某个函数的头文件
 //godoc -analysis=type -http=:6060
 //go:generate go tool yacc -o yacc/y.tab.go yacc/tiger.y
 //go:generate go build -o tiger main.go

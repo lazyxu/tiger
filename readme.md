@@ -718,7 +718,7 @@ function do_nothing2(d: int) =
 1.检查返回类型并赋值给 resultTy ，如果没写，则默认为 Void 类型，否则就从tenv中查找该类型名称并赋值，如果找不到，就报返回类型未定义错误`"Return type xxx is undefined."`并赋值为 Void 类型  
 2.检查参数列表并赋值给 formalTyLists ，遍历参数链表，如果在tenv中找不到类型名称，就报返回类型未定义错误`"Return type xxx is undefined."`并设置其为 Int 类型，将参数经过转化后的类型形成链表赋值给 formalTyLists  
 3.默认所有的变量都是可逃逸的，创建一个新的层(Level)，并将该函数加入到 venv  
- 
+
 ```
 newLevel := translate.NewLevel(level, label, boolList_head)
 symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTyLists, resultTy})
@@ -814,6 +814,7 @@ symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTy
 
 ##### IfExp
 `format: if exp then exp else exp` ?????  
+
 如果测试条件的表达式不返回整数,报告测试条件错误(Tiger 中非 0 为真,0 为假)  
 如果缺少 else 子句,且 then 子句有返回值,报错  如果不缺少 else 子句,检查 then 和 else 的返回值是否匹配(采用 AssignExp 的方法, 只是都返回 nil 被认为是合法的)  
 
@@ -853,8 +854,9 @@ symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTy
 我们采用的是 X86 汇编，一般它的函数调用时的汇编是这样的
 
 ```
-push ebp //
-mov ebp, esp 
+push ebp     // 保存前一个函数的栈基址，用来访问上一个函数栈中的信息，在函数调用之后需要恢复
+mov ebp, esp // 此时ebp是当前函数栈的基址，用来访问栈中的信息
+sub esp, 40h // 临时变量存储的空间
 push edi // 被调用者要保护的寄存器
 push esi
 ...
@@ -891,7 +893,7 @@ ebp+4+4-16 局部变量3
 type Frame *Frame_
 type Frame_ struct {
 	LocalCount int // 局部变量的数量
-	Formals    AccessList // 局部变量链表
+	Formals    AccessList // 局部变量链表，第一项存储了静态链的相关信息
 	Name       temp.Label // 当前栈帧的标记
 }
 ```
@@ -902,7 +904,15 @@ formals参数是一个bool的链表，true表示该参数是逃逸的，false表
 
 ### temp
 位于 `temp`  
-Temp是局部变量的抽象名，Label是静态存储器地址的抽象名，temp模块管理这两种不同的名字组成的两个集合    
+Temp是局部变量的抽象名，Label是静态存储器地址的抽象名，temp模块管理这两种不同的名字组成的两个集合  
+  
+```
+type Temp *Temp_
+type Temp_ struct {
+	Num int
+}
+type Label symbol.Symbol
+```
 
 #### func Newtemp() Temp
 从临时变量（暂时保存在寄存器中的值）的无穷集合中返回一个新的临时变量
@@ -913,30 +923,49 @@ Temp是局部变量的抽象名，Label是静态存储器地址的抽象名，te
 #### func Namedlabel(s string) Label
 返回一个汇编名为string的新标号，用来实现malloc，initArray，stringEqual等库函数的功能
 
-
 ### Access
 位于 `frame/access.go`，用于描述那些可以存放在栈中或寄存器中的形式参数和局部变量  
 
+函数形式参数的`Offset`为 `(1 + InFrame_cnt) * WORD_SIZE`，多余的1用来存储静态链  
+最新的局部变量的`Offfset`为 `WORD_SIZE * (-(1 + f.LocalCount)`，多余的1用来存储返回地址  
+
 ```
 type FrameAccess struct {
-	Offset int // 从1开始累积
+	Offset int // 表示当前变量和 fp 的偏移
 }
 type RegAccess struct {
-	Reg temp.Temp
+	Reg temp.Temp // 临时变量（暂时保存在寄存器中的值）的标号
 }
 ```
 
-如何创建局部变量
+#### func makeFormalAccessList(formals util.BoolList) AccessList
+创建格式化的参数链表
+
+#### func AllocLocal(f Frame, escape bool) Access
+创建局部变量
+```
+new_count := f.LocalCount + 1
+f.LocalCount = new_count
+if escape {
+	// one extra space for return
+	return &FrameAccess{WORD_SIZE * (-(1 + f.LocalCount))}
+}
+return &RegAccess{temp.Newtemp()}
+```
+
+### Frag
+`StringFrag`是数据段，`ProcFrag`是代码段，（和汇编中的segment对应）
 
 ```
-func AllocLocal(f Frame, escape bool) Access {
-	new_count := f.LocalCount + 1
-	f.LocalCount = new_count
-	if escape {
-		// one extra space for return
-		return &FrameAccess{WORD_SIZE * (-(1 + f.LocalCount))}
-	}
-	return &RegAccess{temp.Newtemp()}
+type StringFrag *StringFrag_
+type StringFrag_ struct {
+	Label temp.Label
+	Str   string
+}
+type ProcFrag *ProcFrag_
+type ProcFrag_ struct {
+	Body  tree.Stm
+	Frame Frame
 }
 ```
 
@@ -979,9 +1008,22 @@ type PatchList_ struct {
 下面这三个表达式都继承自translate.Exp:  
 Ex表示“表达式”，表示为tree.Exp  
 Nx表示“无结果语句”，表示为tree.Stm  
-Cx表示“条件语句”，表示为一个可能转移到两个标号之一的语句；一个是真值标号，另一个是假值标号。由于条件语句的跳转要到后面才知道，所以我们需要一张PatchList来记录那些需要填充标号的地点，当整个语句翻译完后，就可以把对应的标号通过PatchList填入到Trues和Falses里面了  
+Cx表示“条件语句”，表示为一个可能转移到两个标号之一的语句；一个是真值标号，另一个是假值标号。由于条件语句的跳转要到后面才知道，所以我们需要一张PatchList来记录那些需要填充标号的地点，当整个语句翻译完后，就可以调用doPatch方法把对应的标号通过PatchList填入到Trues和Falses里面了  
 
+### Level
+Level用来存储某一层函数的栈帧  
 
+```
+type Level *Level_
+type Level_ struct {
+	Parent  Level        // 指向上一级的level
+	Name    temp.Label   // 这层level的标号
+	Frame   frame.Frame  // 这一层的level
+	Formals AccessList   // frame中每一个参数的 access
+}
+```
+
+### func NewLevel(parent Level, name temp.Label, formals util.BoolList) Level
 
 
 ### 抽象语法树翻译成中间代码的过程
@@ -1008,6 +1050,7 @@ return &Ex_{frame.Exp(access.Access, fp)}
 #### func FieldVar(base Exp, offset int) Exp
 属性变量：  
 Tiger的数组值和记录值都是指针，赋值时仅仅是指针赋值，不会赋值数组的每一个成员和记录的每一个域
+
 ```
 addr := &tree.BINOP_{tree.Plus, unEx(base), &tree.CONST_{offset * frame.WORD_SIZE}}
 value := &tree.MEM_{addr}
@@ -1016,6 +1059,7 @@ return &Ex_{value}
 #### func SubscriptVar(base Exp, index Exp) Exp
 下标变量：  
 和上面类似  
+
 ```
 addr := &tree.BINOP_{tree.Plus, unEx(base), &tree.BINOP_{tree.Mul, unEx(index), &tree.CONST_{frame.WORD_SIZE}}}
 newaddr := &tree.BINOP_{tree.Plus, addr, &tree.CONST_{0}}
@@ -1031,6 +1075,7 @@ return &Ex_{value}
 #### func RelExp(op absyn.Oper, left_exp Exp, right_exp Exp) Exp
 条件表达式：  
 这个也不难，absyn.Oper与tree.Op是一一对应的，其中字符串的比较比较复杂，其实现放在汇编代码的stringEqual标签下来实现，到时候只要调用它就可以了
+
 ```
 stm := &tree.CJUMP_{t_relop, unEx(left_exp), unEx(right_exp), nil, nil}
 trues := &PatchList_{&stm.True, nil}
@@ -1041,6 +1086,7 @@ return &Cx_{trues, falses, stm}
 #### func StringExp(s string) Exp
 字符串表达式：  
 对一个字符串新建一个label，并将其和字符串本身加入到stringFrag里面，然后将这个片段加入到stringFragList的头部
+
 ```
 label := temp.Newlabel()
 string_frag := &frame.StringFrag_{label, s}

@@ -3,7 +3,7 @@ package absyn
 import "github.com/MeteorKL/tiger/symbol"
 
 type Ty interface {
-	Node
+	ASTNode
 	A_ty()
 }
 

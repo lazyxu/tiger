@@ -12,6 +12,7 @@ const(
 var Absyn_root absyn.Exp;
 %}
 
+/* define YYSTYPE */
 %union {
 	ty         absyn.Ty
 	namety     absyn.Namety

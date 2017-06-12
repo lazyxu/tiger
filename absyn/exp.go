@@ -3,7 +3,7 @@ package absyn
 import "github.com/MeteorKL/tiger/symbol"
 
 type Exp interface {
-	Node
+	ASTNode
 	A_exp()
 }
 
@@ -63,10 +63,22 @@ type AssignExp struct {
 	Var Var
 	Exp Exp
 }
+
+// IfExp f
 type IfExp struct {
 	Pos              Pos
 	Test, Then, Else Exp
 }
+
+// IfExpression : There are two forms of variable declarations in Tiger.
+// __if exp1 then exp2 else exp3__
+// exp1 is typed as an integer, exp2 and exp3 must have the same type which will be the type of the entire structure. The resulting type cannot be that of nil.
+// __if exp1 then exp2__
+// exp1 is typed as an integer, and exp2 must have no value. The whole expression has no value either.
+func IfExpression() {
+
+}
+
 type WhileExp struct {
 	Pos        Pos
 	Test, Body Exp

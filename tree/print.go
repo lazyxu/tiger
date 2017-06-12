@@ -37,7 +37,7 @@ func printStm(w *bufio.Writer, stm Stm) {
 		stm := stm.(*LABEL_)
 		w.WriteString("\t" + strconv.Itoa(id) + "[label=\"LABEL\"]\n")
 		w.WriteString("\t" + strconv.Itoa(id) + " -> " + strconv.Itoa(Node_count) + "\n")
-		w.WriteString("\t" + strconv.Itoa(id) + "[label=\"" + stm.Label.Name + "\"]\n")
+		w.WriteString("\t" + strconv.Itoa(Node_count) + "[label=\"" + stm.Label.Name + "\"]\n")
 		Node_count++
 		break
 	case *JUMP_:
@@ -50,17 +50,17 @@ func printStm(w *bufio.Writer, stm Stm) {
 		stm := stm.(*CJUMP_)
 		w.WriteString("\t" + strconv.Itoa(id) + "[label=\"CJUMP|<1>op|<2>left|<3>right|<4>true|<5>false\"]\n")
 		w.WriteString("\t" + strconv.Itoa(id) + ":1 -> " + strconv.Itoa(Node_count) + "\n")
-		w.WriteString("\t" + strconv.Itoa(id) + "[label=\"" + rel_oper[stm.Op] + "\"]\n")
+		w.WriteString("\t" + strconv.Itoa(Node_count) + "[label=\"" + rel_oper[stm.Op] + "\"]\n")
 		Node_count++
 		w.WriteString("\t" + strconv.Itoa(id) + ":2 -> " + strconv.Itoa(Node_count) + "\n")
 		printExp(w, stm.Left)
 		w.WriteString("\t" + strconv.Itoa(id) + ":3 -> " + strconv.Itoa(Node_count) + "\n")
 		printExp(w, stm.Right)
 		w.WriteString("\t" + strconv.Itoa(id) + ":4 -> " + strconv.Itoa(Node_count) + "\n")
-		w.WriteString("\t" + strconv.Itoa(id) + "[label=\"" + stm.True.Name + "\"]\n")
+		w.WriteString("\t" + strconv.Itoa(Node_count) + "[label=\"" + stm.True.Name + "\"]\n")
 		Node_count++
 		w.WriteString("\t" + strconv.Itoa(id) + ":5 -> " + strconv.Itoa(Node_count) + "\n")
-		w.WriteString("\t" + strconv.Itoa(id) + "[label=\"" + stm.False.Name + "\"]\n")
+		w.WriteString("\t" + strconv.Itoa(Node_count) + "[label=\"" + stm.False.Name + "\"]\n")
 		Node_count++
 		break
 	case *MOVE_:

@@ -184,8 +184,8 @@ func (l *TigerLex) Lex(yylval *yySymType) int {
 						l.next()
 						return l.Lex(yylval)
 					}
-					l.Error("comment not terminated")
 				}
+				l.Error("comment not terminated")
 			} else if Em_ch == '/' {
 				l.next()
 				for Em_ch != '\n' && Em_ch != EOFCH {
