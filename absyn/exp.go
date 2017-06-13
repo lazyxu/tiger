@@ -75,8 +75,11 @@ type IfExp struct {
 // exp1 is typed as an integer, exp2 and exp3 must have the same type which will be the type of the entire structure. The resulting type cannot be that of nil.
 // __if exp1 then exp2__
 // exp1 is typed as an integer, and exp2 must have no value. The whole expression has no value either.
-func IfExpression() {
+func IfExpression(e Exp) {
+}
 
+func (*IfExp) Positon() int {
+	return 1
 }
 
 type WhileExp struct {

@@ -1,5 +1,6 @@
 *.ast
-*.ast.png
+*.ir
+*.png
 example/*
 tiger
 y.output

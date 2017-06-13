@@ -95,6 +95,53 @@ func transTy(tenv table.Table, t absyn.Ty) types.Ty {
 		recordFieldList := t.Record
 		var TyList types.FieldList = nil
 		var tyHead types.FieldList = nil
+		var tempTy types.Field
+		for recordFieldList != nil {
+			tyRecordHead := symbol.Look(tenv, recordFieldList.Head.Typ)
+			if tyRecordHead == nil {
+				yacc.EM_error(recordFieldList.Head.Pos, "Type '"+recordFieldList.Head.Typ.Name+"' is undefined.")
+			} else {
+				tyRecordHead := tyRecordHead.(types.Ty)
+				tempTy = &types.Field_{recordFieldList.Head.Name, tyRecordHead}
+				if TyList == nil {
+					TyList = &types.FieldList_{tempTy, nil}
+					tyHead = TyList
+				} else {
+					TyList.Tail = &types.FieldList_{tempTy, nil}
+					TyList = TyList.Tail
+				}
+			}
+			recordFieldList = recordFieldList.Tail
+		}
+		return &types.Record_{tyHead}
+	case *absyn.ArrayTy:
+		t := t.(*absyn.ArrayTy)
+		arrayTy := symbol.Look(tenv, t.Array).(types.Ty)
+		if arrayTy == nil {
+			yacc.EM_error(t.Pos, "Type '"+t.Array.Name+"' is undefined.")
+		}
+		return &types.Array_{arrayTy}
+
+	}
+	util.Assert(!true)
+	return nil
+}
+
+func assignableTy(tenv table.Table, t absyn.Ty) types.Ty {
+	switch t.(type) {
+	case *absyn.NameTy:
+		t := t.(*absyn.NameTy)
+		nameTy := symbol.Look(tenv, t.Name).(types.Ty)
+		if nameTy == nil {
+			yacc.EM_error(t.Pos, "Type '"+t.Name.Name+"' is undefined.")
+			return &types.Tyint
+		}
+		return nameTy
+	case *absyn.RecordTy:
+		t := t.(*absyn.RecordTy)
+		recordFieldList := t.Record
+		var TyList types.FieldList = nil
+		var tyHead types.FieldList = nil
 		var tyRecordHead types.Ty
 		var tempTy types.Field
 		for recordFieldList != nil {

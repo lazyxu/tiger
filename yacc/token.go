@@ -3,7 +3,7 @@ package yacc
 import "strings"
 
 func Lookup(ident string) int {
-	for tok := reserved_word_beg - INT + 3; tok < reserved_word_end-INT+3-1; tok++ {
+	for tok := reserved_word_beg - INT + 3; tok < reserved_word_end-INT+3; tok++ {
 		if strings.ToLower(yyToknames[tok]) == ident {
 			return tok + INT - 3
 		}

@@ -37,6 +37,6 @@ func PositionFor(p Pos) (pos Position) {
 	if lines != nil {
 		pos.Column = int(p - lines.LinePos)
 	}
-	IfExpression()
+	// IfExpression()
 	return
 }

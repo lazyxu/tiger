@@ -20,16 +20,16 @@ const (
 )
 
 var opnames = [...]string{
-	"+", // fsd
-	"-",
-	"*",
-	"/",
-	"=",
-	"<>",
-	"<",
-	"<=",
-	">",
-	">=",
+	"Plus", // fsd
+	"Minus",
+	"Times",
+	"Divide",
+	"Eq",
+	"Neq",
+	"Lt",
+	"Le",
+	"Gt",
+	"Ge",
 }
 
 // 一共有 Exp, Dec, Ty, Var 四种抽象语法树的结点

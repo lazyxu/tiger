@@ -22,6 +22,8 @@ go test -v -run='Test_Lex' -args ../testcases/test4.tig
 cd yacc
 go test -v -run='Test_Yacc' -args ../testcases/test4.tig
 ```
+未通过的测试 
+6 12
 ### 1.3 代码完成情况
 * [✔︎] absyn 抽象语法树
     * absyn

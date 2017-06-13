@@ -202,7 +202,7 @@ func (l *TigerLex) Lex(yylval *yySymType) int {
 				l.next()
 				Em_tokStr = string(Em_src[EM_old_tokPos:EM_tokPos])
 				tok = NEQ
-			} else if Em_ch == '>' {
+			} else if Em_ch == '=' {
 				l.next()
 				Em_tokStr = string(Em_src[EM_old_tokPos:EM_tokPos])
 				tok = LE

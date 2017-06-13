@@ -2,6 +2,7 @@ package yacc
 
 import (
 	"flag"
+	"strconv"
 	"testing"
 
 	"github.com/MeteorKL/tiger/absyn"
@@ -50,4 +51,27 @@ Usage:
 		}
 	}
 	fmt.Printf("+--------------------------------------\n")
+}
+
+func Test_LexAll(t *testing.T) {
+	for i := 1; i < 50; i++ {
+		testfile := "../testcases/test" + strconv.Itoa(i) + ".tig"
+		text := util.ReadFile(testfile)
+		l := NewLex(string(text))
+		yylval := &yySymType{
+			ival: 0,
+			sval: "",
+		}
+		println("lex " + testfile)
+		for {
+			tok := l.Lex(yylval)
+			if tok == EOF {
+				break
+			}
+			position := absyn.PositionFor(EM_old_tokPos)
+			if tok == ILLEGAL {
+				fmt.Printf("%s:%d:%d\tILLEGAL\n", position.Line, position.Column)
+			}
+		}
+	}
 }
