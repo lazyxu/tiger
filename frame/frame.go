@@ -48,3 +48,29 @@ func ExternalCall(str string, args tree.ExpList) tree.Exp {
 	fun_name := &tree.NAME_{temp.Namedlabel(str)}
 	return &tree.CALL_{fun_name, args}
 }
+
+func callersaves() temp.TempList {
+	/* assist-function of calldefs() */
+
+	ebx := temp.Newtemp()
+	ecx := temp.Newtemp()
+	edx := temp.Newtemp()
+	edi := temp.Newtemp()
+	esi := temp.Newtemp()
+	temp.Enter(TempMap(), ebx, "ebx")
+	temp.Enter(TempMap(), ecx, "ecx")
+	temp.Enter(TempMap(), edx, "edx")
+	temp.Enter(TempMap(), edi, "edi")
+	temp.Enter(TempMap(), esi, "esi")
+	return &temp.TempList_{RV(), &temp.TempList_{ebx, &temp.TempList_{ecx, &temp.TempList_{edx, &temp.TempList_{edi, &temp.TempList_{esi, nil}}}}}}
+}
+
+var protected_regs temp.TempList = nil
+
+func Calldefs() temp.TempList {
+	/* some registers that may raise side-effect (caller procted, return-val-reg, return-addr-reg) */
+	if protected_regs == nil {
+		protected_regs = callersaves()
+	}
+	return protected_regs
+}

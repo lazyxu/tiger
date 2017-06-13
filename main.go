@@ -4,13 +4,21 @@ import (
 	"bufio"
 	"os"
 
+	"strconv"
+
 	"github.com/MeteorKL/tiger/absyn"
+	"github.com/MeteorKL/tiger/assem"
+	"github.com/MeteorKL/tiger/canon"
+	"github.com/MeteorKL/tiger/codegen"
 	"github.com/MeteorKL/tiger/frame"
 	"github.com/MeteorKL/tiger/semant"
+	"github.com/MeteorKL/tiger/temp"
 	"github.com/MeteorKL/tiger/tree"
 	"github.com/MeteorKL/tiger/util"
 	"github.com/MeteorKL/tiger/yacc"
 )
+
+/* clean:rm -rf testcases/*.png testcases/*.Linearize testcases/*.ir testcases/*.ast testcases/*.TraceSchedule testcases/*.s */
 
 //go doc -u xxx 查看某个函数的头文件
 //godoc -analysis=type -http=:6060
@@ -40,27 +48,38 @@ func main() {
 
 	tree.Node_count = 1
 
-	var f *os.File
-	var err error
-	filepath := args[1] + ".ir"
-	f, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(args[1]+".s", os.O_WRONLY|os.O_CREATE, 0666)
 	util.PanicErr(err)
 	w := bufio.NewWriter(f)
-
-	_, err = w.WriteString("digraph G{\n\tnode [shape = record,height=.1];\n")
-	util.PanicErr(err)
-	for ; frags != nil; frags = frags.Tail {
+	for i := 0; frags != nil; frags = frags.Tail {
 		switch frags.Head.(type) {
 		case *frame.ProcFrag_:
-			f := frags.Head.(*frame.ProcFrag_)
-			tree.PPrintStm(w, f.Body)
+			println("*frame.ProcFrag_")
+			tree.Node_count = 1
+			procFrag := frags.Head.(*frame.ProcFrag_)
+			tree.PrintStm(args[1]+strconv.Itoa(i)+".ir", procFrag.Body)
+			util.Visualization(args[1] + strconv.Itoa(i) + ".ir")
+
+			stmList := canon.Linearize(procFrag.Body)
+			tree.PrintStmList(args[1]+strconv.Itoa(i)+".Linearize", stmList)
+			util.Visualization(args[1] + strconv.Itoa(i) + ".Linearize")
+
+			stmList = canon.TraceSchedule(canon.BasicBlocks(stmList))
+			tree.PrintStmList(args[1]+strconv.Itoa(i)+".TraceSchedule", stmList)
+			util.Visualization(args[1] + strconv.Itoa(i) + ".TraceSchedule")
+
+			iList := codegen.Codegen(procFrag.Frame, stmList) /* 9 */
+
+			w.WriteString("BEGIN " + procFrag.Frame.Name.Name + "\n")
+			assem.PrintInstrList(w, iList, temp.LayerMap(frame.TempMap(), temp.GetTempMap()))
+			w.WriteString("END " + procFrag.Frame.Name.Name + "\n\n")
+
+		case *frame.StringFrag_:
+			println("*frame.StringFrag_")
+			stringFrag := frags.Head.(*frame.StringFrag_)
+			w.WriteString(stringFrag.Label.Name + ": " + stringFrag.Str + "\n")
 		}
 	}
-
-	_, err = w.WriteString("}\n")
-	util.PanicErr(err)
 	w.Flush()
 	f.Close()
-
-	util.Visualization(args[1] + ".ir")
 }

@@ -1,9 +1,5 @@
 let 
-    var a:=0
+    var a:=256
 in
-    if a=0
-    then
-        1
-    else
-        2
+    print("abcd")
 end

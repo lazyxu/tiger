@@ -18,11 +18,10 @@ type TempList_ struct {
 var temps int = 0
 
 func Newtemp() Temp {
-	println("new temp")
 	p := new(Temp_)
 	p.Num = temps
 	temps++
 	r := strconv.Itoa(p.Num)
-	Enter(GetTempMap(), p, r)
+	Enter(GetTempMap(), p, "t"+r)
 	return p
 }

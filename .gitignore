@@ -1,6 +1,8 @@
-*.ast
-*.ir
-*.png
-example/*
+testcases/*.png 
+testcases/*.Linearize 
+testcases/*.ir 
+testcases/*.ast 
+testcases/*.TraceSchedule 
+testcases/*.s
 tiger
 y.output

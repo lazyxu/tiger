@@ -194,3 +194,15 @@ func PrintStm(filepath string, stm Stm) {
 func PPrintStm(w *bufio.Writer, stm Stm) {
 	printStm(w, stm)
 }
+
+func PrintStmList(filepath string, s StmList) {
+	for stm := s.Head; s != nil; s = s.Tail {
+		PrintStm(filepath, stm)
+	}
+}
+
+func PPrintStmList(w *bufio.Writer, s StmList) {
+	for stm := s.Head; s != nil; s = s.Tail {
+		printStm(w, stm)
+	}
+}
