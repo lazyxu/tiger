@@ -1,5 +1,9 @@
 let 
     var a:=256
+    function b(x:int, y:string)=
+    x+1
 in
     print("abcd")
+    b(1, "xx")
 end
+

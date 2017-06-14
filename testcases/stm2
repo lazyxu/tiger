@@ -1,0 +1,32 @@
+digraph G{
+	node [shape = record,height=.1];
+	1[label="MOVE|<1>dst|<2>src"]
+	1:1 -> 2
+	2[label="MEM"]
+	2 -> 3
+	3[label="BINOP|<1>op|<2>left|<3>right"]
+	3:1 -> 4
+	4[label="PLUS"]
+	3:2 -> 5
+	5[label="MEM"]
+	5 -> 6
+	6[label="BINOP|<1>op|<2>left|<3>right"]
+	6:1 -> 7
+	7[label="PLUS"]
+	6:2 -> 8
+	8[label="TEMP"]
+	8 -> 9
+	9[label="t0"]
+	6:3 -> 10
+	10[label="CONST"]
+	10 -> 11
+	11[label="4"]
+	3:3 -> 12
+	12[label="CONST"]
+	12 -> 13
+	13[label="-8"]
+	1:2 -> 14
+	14[label="CONST"]
+	14 -> 15
+	15[label="256"]
+}

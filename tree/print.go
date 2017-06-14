@@ -196,13 +196,31 @@ func PPrintStm(w *bufio.Writer, stm Stm) {
 }
 
 func PrintStmList(filepath string, s StmList) {
-	for stm := s.Head; s != nil; s = s.Tail {
-		PrintStm(filepath, stm)
+	if util.CheckFileExist(filepath) {
+		os.Remove(filepath)
 	}
+	f, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
+	util.PanicErr(err)
+	w := bufio.NewWriter(f)
+
+	_, err = w.WriteString("digraph G{\n\tnode [shape = record,height=.1];\n")
+	util.PanicErr(err)
+	Node_count = 1
+	for ; s != nil; s = s.Tail {
+		printStm(w, s.Head)
+	}
+	_, err = w.WriteString("}\n")
+	util.PanicErr(err)
+
+	w.Flush()
+	f.Close()
 }
 
 func PPrintStmList(w *bufio.Writer, s StmList) {
-	for stm := s.Head; s != nil; s = s.Tail {
-		printStm(w, stm)
+	if s == nil {
+		return
+	}
+	for ; s != nil; s = s.Tail {
+		printStm(w, s.Head)
 	}
 }
