@@ -13,20 +13,16 @@ import (
 
 var Frame frame.Frame = nil /* current function frame */
 
-func MATCH_OP(I tree.BinOp, Op *string, Sign *string) {
+func MATCH_OP(I tree.BinOp, Op *string) {
 	switch I {
 	case tree.Plus:
 		*Op = "add"
-		*Sign = "+"
 	case tree.Minus:
 		*Op = "sub"
-		*Sign = "-"
 	case tree.Mul:
 		*Op = "mul"
-		*Sign = "*"
 	case tree.Div:
 		*Op = "div"
-		*Sign = "/"
 	default:
 		util.Assert(!true)
 	}
@@ -46,21 +42,20 @@ func munchExp(e tree.Exp) temp.Temp {
 	switch e.(type) {
 	case *tree.BINOP_:
 		e := e.(*tree.BINOP_)
-		var op *string
-		var sign *string
+		op := new(string)
 		left := e.Left
 		right := e.Right
-		MATCH_OP(e.Op, op, sign)
+		MATCH_OP(e.Op, op)
 		if l, ok := e.Left.(*tree.CONST_); ok {
-			p2asm_str = WRITE_ASM_STR("%s $%x, `d0", op, l.CONST)
+			p2asm_str = WRITE_ASM_STR("%s $%x, `d0", *op, l.CONST)
 			r = munchExp(right)
 			emit(&assem.Oper{p2asm_str, &temp.TempList_{r, nil}, nil, nil})
-		} else if right, ok := e.Right.(*tree.CONST_); ok { /* BINOP(op, e, CONST) */
-			p2asm_str = WRITE_ASM_STR("%s $%x, `d0", op, right.CONST)
+		} else if ri, ok := e.Right.(*tree.CONST_); ok { /* BINOP(op, e, CONST) */
+			p2asm_str = WRITE_ASM_STR("%s $%x, `d0", *op, ri.CONST)
 			r = munchExp(left)
 			emit(&assem.Oper{p2asm_str, &temp.TempList_{r, nil}, nil, nil})
 		} else { /* BINOP(op, e, e) */
-			p2asm_str = WRITE_ASM_STR("%s `s0, `d0", op)
+			p2asm_str = WRITE_ASM_STR("%s `s0, `d0", *op)
 			r1 := munchExp(right)
 			r = munchExp(left)
 			emit(&assem.Oper{p2asm_str, &temp.TempList_{r1, nil}, &temp.TempList_{r, nil}, nil})

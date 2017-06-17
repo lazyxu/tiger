@@ -6,3 +6,5 @@ testcases/*.TraceSchedule
 testcases/*.s
 tiger
 y.output
+do_stm
+do_stm.png

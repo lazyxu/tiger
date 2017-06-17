@@ -79,6 +79,7 @@ func main() {
 			stringFrag := frags.Head.(*frame.StringFrag_)
 			w.WriteString(stringFrag.Label.Name + ": " + stringFrag.Str + "\n")
 		}
+		i++
 	}
 	w.Flush()
 	f.Close()

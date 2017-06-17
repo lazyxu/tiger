@@ -8,17 +8,17 @@
 
 ### 1.2 测试和运行
 #### 运行
-```
+```bash
 go generate
 ./tiger testcases/test4.tig
 ```
 #### lex 单元测试
-```
+```bash
 cd yacc
 go test -v -run='Test_Lex' -args ../testcases/test4.tig
 ```
 #### yacc 单元测试
-```
+```bash
 cd yacc
 go test -v -run='Test_Yacc' -args ../testcases/test4.tig
 ```
@@ -62,7 +62,7 @@ go test -v -run='Test_Yacc' -args ../testcases/test4.tig
     * level 层
     * patch
     * translate
-* [✔︎] tree 
+* [✔︎] tree ir树
     * exp
     * op 
     * print 
@@ -79,8 +79,7 @@ go test -v -run='Test_Yacc' -args ../testcases/test4.tig
 go语言没有lex工具，所以我们根据下面的lex(c语言)手写了一个lex分析器  
 
 ### 利用lex进行词法分析
-
-```
+```c
 %{
 #include <string.h>
 #include "absyn.h"
@@ -1078,7 +1077,7 @@ return &Ex_{value}
 条件表达式：  
 这个也不难，absyn.Oper与tree.Op是一一对应的，其中字符串的比较比较复杂，其实现放在汇编代码的stringEqual标签下来实现，到时候只要调用它就可以了
 
-```
+```go
 stm := &tree.CJUMP_{t_relop, unEx(left_exp), unEx(right_exp), nil, nil}
 trues := &PatchList_{&stm.True, nil}
 falses := &PatchList_{&stm.False, nil}
@@ -1089,7 +1088,7 @@ return &Cx_{trues, falses, stm}
 字符串表达式：  
 对一个字符串新建一个label，并将其和字符串本身加入到stringFrag里面，然后将这个片段加入到stringFragList的头部
 
-```
+```go
 label := temp.Newlabel()
 string_frag := &frame.StringFrag_{label, s}
 stringFragList = &frame.FragList_{string_frag, stringFragList}

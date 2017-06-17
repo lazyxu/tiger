@@ -1,12 +1,13 @@
+/* define a recursive function */
 let
-var a:int := 0
-var b:int := 0
 
-function nfactor(n: int, m: int, s: string): int =
-	
-		m - n + a * b
-// f
+/* calculate n! */
+function nfactor(n: int): int =
+		if  n = 0 
+			then 1
+			else n * nfactor(n-1)
+
 in
-	nfactor(1, 2, "hello");
+	nfactor(10)
 end
 
