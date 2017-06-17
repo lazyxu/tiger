@@ -16,7 +16,9 @@ func Visualization(outfile string) {
 	if err != nil {
 		fmt.Println(string(out) + "err: " + err.Error())
 	}
-	Debug(string(out))
+	if len(out) != 0 {
+		Debug(string(out))
+	}
 
 	openPNG := exec.Command("open", outfile+".png")
 	// openPNG.CombinedOutput()
@@ -24,7 +26,9 @@ func Visualization(outfile string) {
 	if err != nil {
 		fmt.Println(string(out) + "err: " + err.Error())
 	}
-	Debug(string(out))
+	if len(out) != 0 {
+		Debug(string(out))
+	}
 
 	os.Remove(outfile)
 }

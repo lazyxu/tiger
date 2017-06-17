@@ -2,7 +2,7 @@ package util
 
 import "fmt"
 
-const IsDebug bool = false
+const IsDebug bool = true
 
 func Debug(s string) {
 	if IsDebug {

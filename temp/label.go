@@ -19,7 +19,7 @@ var labels int = 0
 
 func Newlabel() Label {
 	buf := "L" + strconv.Itoa(labels)
-	util.Debug("Newlabel: L" + buf)
+	util.Debug("Newlabel: " + buf)
 	labels++
 	return Label(symbol.New(buf))
 }

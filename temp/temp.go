@@ -23,8 +23,8 @@ func Newtemp() Temp {
 	p := new(Temp_)
 	p.Num = temps
 	buf := strconv.Itoa(p.Num)
-	util.Debug("Newtemp: L" + buf)
-	Enter(GetTempMap(), p, "t"+buf)
+	util.Debug("Newtemp: r" + buf)
+	Enter(GetTempMap(), p, "r"+buf)
 	temps++
 	return p
 }
