@@ -11,9 +11,9 @@ import (
 	"github.com/MeteorKL/tiger/util"
 )
 
-var Frame frame.Frame = nil /* current function frame */
+var Frame frame.Frame /* current function frame */
 
-func MATCH_OP(I tree.BinOp, Op *string) {
+func matchOp(I tree.BinOp, Op *string) {
 	switch I {
 	case tree.Plus:
 		*Op = "add"
@@ -28,7 +28,7 @@ func MATCH_OP(I tree.BinOp, Op *string) {
 	}
 }
 
-func WRITE_ASM_STR(Str string, Args ...interface{}) string {
+func writeAsmStr(Str string, Args ...interface{}) string {
 	buf := bytes.NewBuffer(make([]byte, 0))
 	fmt.Fprintf(buf, Str, Args[0:]...)
 	return string(buf.Bytes())
@@ -36,7 +36,7 @@ func WRITE_ASM_STR(Str string, Args ...interface{}) string {
 
 func munchExp(e tree.Exp) temp.Temp {
 	// char assem_string[100];
-	var p2asm_str string
+	var asmStr string
 	r := temp.Newtemp() /* return value */
 
 	switch e.(type) {
@@ -45,20 +45,29 @@ func munchExp(e tree.Exp) temp.Temp {
 		op := new(string)
 		left := e.Left
 		right := e.Right
-		MATCH_OP(e.Op, op)
+		matchOp(e.Op, op)
 		if l, ok := e.Left.(*tree.CONST_); ok {
-			p2asm_str = WRITE_ASM_STR("%s $%x, `d0", *op, l.CONST)
+			asmStr = writeAsmStr("%s $%x, `d0", *op, l.CONST)
 			r = munchExp(right)
-			emit(&assem.Oper{p2asm_str, &temp.TempList_{r, nil}, nil, nil})
+			emit(
+				&assem.Oper{
+					Assem: asmStr,
+					Dst: &temp.TempList_{
+						Head: r,
+						Tail: nil},
+					Src:   nil,
+					Jumps: nil,
+				},
+			)
 		} else if ri, ok := e.Right.(*tree.CONST_); ok { /* BINOP(op, e, CONST) */
-			p2asm_str = WRITE_ASM_STR("%s $%x, `d0", *op, ri.CONST)
+			asmStr = writeAsmStr("%s $%x, `d0", *op, ri.CONST)
 			r = munchExp(left)
-			emit(&assem.Oper{p2asm_str, &temp.TempList_{r, nil}, nil, nil})
+			emit(&assem.Oper{asmStr, &temp.TempList_{r, nil}, nil, nil})
 		} else { /* BINOP(op, e, e) */
-			p2asm_str = WRITE_ASM_STR("%s `s0, `d0", *op)
+			asmStr = writeAsmStr("%s `s0, `d0", *op)
 			r1 := munchExp(right)
 			r = munchExp(left)
-			emit(&assem.Oper{p2asm_str, &temp.TempList_{r1, nil}, &temp.TempList_{r, nil}, nil})
+			emit(&assem.Oper{asmStr, &temp.TempList_{r1, nil}, &temp.TempList_{r, nil}, nil})
 		}
 		return r
 	case *tree.MEM_:
@@ -68,17 +77,17 @@ func munchExp(e tree.Exp) temp.Temp {
 			left := binOp.Left
 			right := binOp.Right
 			if l, ok := left.(*tree.CONST_); ok { /* MEM(BINOP(+, CONST, e)) */
-				p2asm_str = WRITE_ASM_STR("mov %d(`s0), `d0", l.CONST)
-				emit(&assem.Move{p2asm_str, &temp.TempList_{r, nil}, &temp.TempList_{munchExp(right), nil}})
+				asmStr = writeAsmStr("mov %d(`s0), `d0", l.CONST)
+				emit(&assem.Move{asmStr, &temp.TempList_{r, nil}, &temp.TempList_{munchExp(right), nil}})
 			} else if rig, ok := right.(*tree.CONST_); ok { /**/
-				p2asm_str = WRITE_ASM_STR("mov %d(`s0), `d0", rig.CONST)
-				emit(&assem.Move{p2asm_str, &temp.TempList_{r, nil}, &temp.TempList_{munchExp(left), nil}})
+				asmStr = writeAsmStr("mov %d(`s0), `d0", rig.CONST)
+				emit(&assem.Move{asmStr, &temp.TempList_{r, nil}, &temp.TempList_{munchExp(left), nil}})
 			} else {
 				util.Assert(!true) /*??? this shouldnot occur */
 			}
 		} else if c, ok := mem.(*tree.CONST_); ok { /* MEM(CONST) */
-			p2asm_str = WRITE_ASM_STR("mov ($0x%x), `d0", c.CONST)
-			emit(&assem.Move{p2asm_str, &temp.TempList_{r, nil}, nil})
+			asmStr = writeAsmStr("mov ($0x%x), `d0", c.CONST)
+			emit(&assem.Move{asmStr, &temp.TempList_{r, nil}, nil})
 		} else { /* MEM(e) */
 			emit(&assem.Move{"mov (`s0), `d0", &temp.TempList_{r, nil}, &temp.TempList_{munchExp(mem), nil}})
 		}
@@ -96,8 +105,8 @@ func munchExp(e tree.Exp) temp.Temp {
 		return r
 	case *tree.CONST_:
 		e := e.(*tree.CONST_)
-		p2asm_str = WRITE_ASM_STR("mov $0x%x, `d0", e.CONST)
-		emit(&assem.Move{p2asm_str, &temp.TempList_{r, nil}, nil})
+		asmStr = writeAsmStr("mov $0x%x, `d0", e.CONST)
+		emit(&assem.Move{asmStr, &temp.TempList_{r, nil}, nil})
 		return r
 	case *tree.CALL_:
 		e := e.(*tree.CALL_)
@@ -109,11 +118,11 @@ func munchExp(e tree.Exp) temp.Temp {
 	return nil
 }
 
-func ASSEM_MOVE_MEM_PLUS(p2asm_str *string, Dst tree.Exp, Src tree.Exp, Constt int) {
+func ASSEM_MOVE_MEM_PLUS(asmStr *string, Dst tree.Exp, Src tree.Exp, Constt int) {
 	buf := bytes.NewBuffer(make([]byte, 0))
 	fmt.Fprintf(buf, "mov `s1, %d(`s0)", Constt)
-	*p2asm_str = string(buf.Bytes())
-	emit(&assem.Move{*p2asm_str, nil, &temp.TempList_{munchExp(Dst), &temp.TempList_{munchExp(Src), nil}}})
+	*asmStr = string(buf.Bytes())
+	emit(&assem.Move{*asmStr, nil, &temp.TempList_{munchExp(Dst), &temp.TempList_{munchExp(Src), nil}}})
 }
 
 func MATCH_CMP(I tree.RelOp, Op *string) {
@@ -137,7 +146,7 @@ func MATCH_CMP(I tree.RelOp, Op *string) {
 
 func munchStm(s tree.Stm) {
 	// char assem_string[100];
-	var p2asm_str string
+	var asmStr string
 
 	switch s.(type) {
 	case *tree.MOVE_:
@@ -149,14 +158,14 @@ func munchStm(s tree.Stm) {
 			dst := dst.(*tree.MEM_)
 			if binOp, ok := dst.Mem.(*tree.BINOP_); ok && binOp.Op == tree.Plus {
 				if right, ok := binOp.Right.(*tree.CONST_); ok { /* MOVE (MEM(BINOP(+, e, CONST)), e) */
-					ASSEM_MOVE_MEM_PLUS(&p2asm_str, binOp.Left, src, right.CONST)
+					ASSEM_MOVE_MEM_PLUS(&asmStr, binOp.Left, src, right.CONST)
 				}
 				if left, ok := binOp.Left.(*tree.CONST_); ok { /* MOVE (MEM(BINOP(+, CONST, e)), e) */
-					ASSEM_MOVE_MEM_PLUS(&p2asm_str, binOp.Right, src, left.CONST)
+					ASSEM_MOVE_MEM_PLUS(&asmStr, binOp.Right, src, left.CONST)
 				}
 			} else if c, ok := dst.Mem.(*tree.CONST_); ok { /* MOVE(MEM(CONST), e) */
-				p2asm_str = WRITE_ASM_STR("mov `s0, (%d)", c.CONST)
-				emit(&assem.Move{p2asm_str, nil, &temp.TempList_{munchExp(src), nil}})
+				asmStr = writeAsmStr("mov `s0, (%d)", c.CONST)
+				emit(&assem.Move{asmStr, nil, &temp.TempList_{munchExp(src), nil}})
 			} else if src, ok := src.(*tree.MEM_); ok { /* MOVE(MEM(e), MEM(e)) */
 				emit(&assem.Move{"mov `s1, (`s0)", nil, &temp.TempList_{munchExp(dst.Mem), &temp.TempList_{munchExp(src.Mem), nil}}})
 			} else { /* MOVE(MEM(e), e) */
@@ -172,8 +181,8 @@ func munchStm(s tree.Stm) {
 	case *tree.LABEL_:
 
 		s := s.(*tree.LABEL_)
-		p2asm_str = WRITE_ASM_STR("%s", s.Label.Name)
-		emit(&assem.Label{p2asm_str, s.Label})
+		asmStr = writeAsmStr("%s", s.Label.Name)
+		emit(&assem.Label{asmStr, s.Label})
 	case *tree.JUMP_:
 		s := s.(*tree.JUMP_)
 		r := munchExp(s.Exp)
@@ -185,8 +194,8 @@ func munchStm(s tree.Stm) {
 		right := munchExp(s.Right)
 		emit(&assem.Oper{"cmp `s0, `s1", nil, &temp.TempList_{left, &temp.TempList_{right, nil}}, nil})
 		MATCH_CMP(s.Op, &cmp)
-		p2asm_str = WRITE_ASM_STR("%s `j0", cmp)
-		emit(&assem.Oper{p2asm_str, nil, nil, &assem.Targets_{&temp.LabelList_{s.True, nil}}})
+		asmStr = writeAsmStr("%s `j0", cmp)
+		emit(&assem.Oper{asmStr, nil, nil, &assem.Targets_{&temp.LabelList_{s.True, nil}}})
 	case *tree.EXP_:
 		s := s.(*tree.EXP_)
 		munchExp(s.Exp)
@@ -211,7 +220,7 @@ func munchArgs(i int, args tree.ExpList /*, F_accessList formals*/) temp.TempLis
 	tlist := munchArgs(i+1, args.Tail)
 	rarg := munchExp(args.Head)
 	// char assem_string[100];
-	// var p2asm_str string
+	// var asmStr string
 
 	emit(&assem.Oper{"push `s0", nil, &temp.TempList_{rarg, nil}, nil})
 	return &temp.TempList_{rarg, tlist}

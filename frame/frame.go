@@ -16,7 +16,7 @@ type Frame_ struct {
 func NewFrame(name temp.Label, formals util.BoolList) Frame {
 	frame := new(Frame_)
 	frame.Name = name
-	println("new frame: ", name.Name)
+	util.Debug("new frame: " + name.Name)
 	frame.Formals = makeFormalAccessList(formals)
 	frame.LocalCount = 0
 	return frame
@@ -45,7 +45,7 @@ func Exp(acc Access, framePtr tree.Exp) tree.Exp {
 }
 
 func ExternalCall(str string, args tree.ExpList) tree.Exp {
-	fun_name := &tree.NAME_{temp.Namedlabel(str)}
+	fun_name := &tree.NAME_{temp.StrToLabel(str)}
 	return &tree.CALL_{fun_name, args}
 }
 

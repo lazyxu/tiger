@@ -26,7 +26,7 @@ func equalTy(leftTy types.Ty, rightTy types.Ty, p absyn.Pos) bool {
 	leftTy = getActualTy(leftTy)
 	rightTy = getActualTy(rightTy)
 	if _, ok := leftTy.(*types.Void_); ok {
-		println(leftTy.(*types.Void_))
+		// util.Debug(leftTy.(*types.Void_))
 		yacc.EM_error(p, "Left hand side type can not be void.")
 		return false
 	}

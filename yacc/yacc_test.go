@@ -2,6 +2,7 @@ package yacc
 
 import (
 	"flag"
+	"fmt"
 	"testing"
 
 	"github.com/MeteorKL/tiger/absyn"
@@ -11,7 +12,7 @@ import (
 func Test_Yacc(t *testing.T) {
 	args := flag.Args()
 	if len(args) < 1 {
-		println(`
+		fmt.Printf(`
 Usage:
 	go test -v -run='Test_Yacc' -args ../testcases/test4.tig
 `)

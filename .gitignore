@@ -1,10 +1,5 @@
 testcases/*.png 
-testcases/*.Linearize 
-testcases/*.ir 
-testcases/*.ast 
-testcases/*.TraceSchedule 
+testcases/*.dot
 testcases/*.s
 tiger
 y.output
-do_stm
-do_stm.png

@@ -14,7 +14,7 @@ import (
 func Test_Lex(t *testing.T) {
 	args := flag.Args()
 	if len(args) < 1 {
-		println(`
+		fmt.Printf(`
 Usage:
 	go test -v -run='Test_Lex' -args ../testcases/test4.tig
 `)
@@ -23,7 +23,7 @@ Usage:
 	testfile := args[0]
 
 	fmt.Printf("+--------------------------------------\n")
-	println("| Test_Lex")
+	fmt.Printf("| Test_Lex")
 	text := util.ReadFile(testfile)
 	l := NewLex(string(text))
 	yylval := &yySymType{
@@ -62,7 +62,7 @@ func Test_LexAll(t *testing.T) {
 			ival: 0,
 			sval: "",
 		}
-		println("lex " + testfile)
+		fmt.Printf("lex " + testfile)
 		for {
 			tok := l.Lex(yylval)
 			if tok == EOF {

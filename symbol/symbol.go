@@ -17,7 +17,7 @@ type Symbol_ struct {
 const SIZE = 109 /* should be prime */
 var hashtable [SIZE]Symbol
 
-func Insert(name string) Symbol {
+func New(name string) Symbol {
 	index := util.Hash([]byte(name)) % SIZE
 	syms := hashtable[index]
 	var sym Symbol

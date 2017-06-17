@@ -115,7 +115,7 @@ func do_exp(exp tree.Exp) StmExp {
 	case *tree.ESEQ_:
 		exp := exp.(*tree.ESEQ_)
 		x := do_exp(exp.Exp)
-		return StmExp{seq(do_stm(exp.Stm), x.s), x.e}
+		return StmExp{seq(DoStm(exp.Stm), x.s), x.e}
 	case *tree.CALL_:
 		exp := exp.(*tree.CALL_)
 		return StmExp{reorder(get_Call_rlist(exp)), exp}
@@ -125,12 +125,12 @@ func do_exp(exp tree.Exp) StmExp {
 }
 
 /* change stm1-stm2 to stm2-stm1 */
-func do_stm(stm tree.Stm) tree.Stm {
+func DoStm(stm tree.Stm) tree.Stm {
 
 	switch stm.(type) {
 	case *tree.SEQ_:
 		stm := stm.(*tree.SEQ_)
-		return seq(do_stm(stm.Left), do_stm(stm.Right))
+		return seq(DoStm(stm.Left), DoStm(stm.Right))
 	case *tree.JUMP_:
 		stm := stm.(*tree.JUMP_)
 		return seq(reorder(&ExpRefList_{&stm.Exp, nil}), stm)
@@ -154,7 +154,7 @@ func do_stm(stm tree.Stm) tree.Stm {
 			dst := stm.Dst.(*tree.ESEQ_)
 			s := dst.Stm
 			stm.Dst = dst.Exp
-			return do_stm(&tree.SEQ_{s, stm})
+			return DoStm(&tree.SEQ_{s, stm})
 
 		}
 		util.Assert(!true)
@@ -187,16 +187,13 @@ func linear(stm tree.Stm, right tree.StmList) tree.StmList {
       1.  No SEQ's or ESEQ's
       2.  The parent of every CALL is an EXP(..) or a MOVE(TEMP t,..) */
 func Linearize(stm tree.Stm) tree.StmList {
-	stm = do_stm(stm)
-	tree.PrintStm("do_stm", stm)
-	util.Visualization("do_stm")
 	return linear(stm, nil)
 }
 
 type StmListList *StmListList_
 type Block struct {
-	stmLists StmListList
-	label    temp.Label
+	StmLists StmListList
+	Label    temp.Label
 }
 type StmListList_ struct {
 	Head tree.StmList
@@ -258,9 +255,8 @@ func mkBlocks(stms tree.StmList, done temp.Label) StmListList {
 */
 func BasicBlocks(stmList tree.StmList) Block {
 	var b Block
-	b.label = temp.Newlabel() /*done label*/
-	b.stmLists = mkBlocks(stmList, b.label)
-	util.Visualization("BasicBlocks")
+	b.Label = temp.Newlabel() /*done label*/
+	b.StmLists = mkBlocks(stmList, b.Label)
 	return b
 }
 
@@ -319,15 +315,15 @@ func trace(list tree.StmList) {
 /* get the next block from the list of stmLists, using only those that have
  * not been traced yet */
 func getNext() tree.StmList {
-	if global_block.stmLists == nil {
-		return &tree.StmList_{&tree.LABEL_{temp.Label(global_block.label)}, nil}
+	if global_block.StmLists == nil {
+		return &tree.StmList_{&tree.LABEL_{temp.Label(global_block.Label)}, nil}
 	} else {
-		s := global_block.stmLists.Head
+		s := global_block.StmLists.Head
 		if symbol.Look(block_env, symbol.Symbol(s.Head.(*tree.LABEL_).Label)) != nil { /* label exists in the table */
 			trace(s)
 			return s
 		}
-		global_block.stmLists = global_block.stmLists.tail
+		global_block.StmLists = global_block.StmLists.tail
 		return getNext()
 	}
 }
@@ -347,7 +343,7 @@ func TraceSchedule(b Block) tree.StmList {
 	var sList StmListList
 	block_env = symbol.Empty()
 	global_block = b
-	for sList = global_block.stmLists; sList != nil; sList = sList.tail {
+	for sList = global_block.StmLists; sList != nil; sList = sList.tail {
 		symbol.Enter(block_env, symbol.Symbol(sList.Head.Head.(*tree.LABEL_).Label), sList.Head)
 	}
 	return getNext()

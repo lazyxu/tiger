@@ -11,8 +11,8 @@ import (
 func Base_tenv() table.Table {
 	tenvBaseTable := table.Empty()
 
-	symbol.Enter(tenvBaseTable, symbol.Insert("int"), &types.Tyint)
-	symbol.Enter(tenvBaseTable, symbol.Insert("string"), &types.Tystring)
+	symbol.Enter(tenvBaseTable, symbol.New("int"), &types.Tyint)
+	symbol.Enter(tenvBaseTable, symbol.New("string"), &types.Tystring)
 
 	return tenvBaseTable
 }
@@ -20,35 +20,35 @@ func Base_tenv() table.Table {
 func Base_venv() table.Table {
 	venvBaseTable := table.Empty()
 
-	symbol.Enter(venvBaseTable, symbol.Insert("print"),
+	symbol.Enter(venvBaseTable, symbol.New("print"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), &types.TyList_{&types.Tystring, nil}, &types.Tyvoid})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("flush"),
+	symbol.Enter(venvBaseTable, symbol.New("flush"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), nil, &types.Tyvoid})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("getchar"),
+	symbol.Enter(venvBaseTable, symbol.New("getchar"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), nil, &types.Tystring})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("ord"),
+	symbol.Enter(venvBaseTable, symbol.New("ord"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), &types.TyList_{&types.Tystring, nil}, &types.Tyint})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("chr"),
+	symbol.Enter(venvBaseTable, symbol.New("chr"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), &types.TyList_{&types.Tyint, nil}, &types.Tystring})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("size"),
+	symbol.Enter(venvBaseTable, symbol.New("size"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), &types.TyList_{&types.Tystring, nil}, &types.Tyint})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("substring"),
+	symbol.Enter(venvBaseTable, symbol.New("substring"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(),
 			&types.TyList_{&types.Tystring, &types.TyList_{&types.Tyint, &types.TyList_{&types.Tyint, nil}}}, &types.Tystring})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("concat"),
+	symbol.Enter(venvBaseTable, symbol.New("concat"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), &types.TyList_{&types.Tystring, &types.TyList_{&types.Tystring, nil}}, &types.Tystring})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("not"),
+	symbol.Enter(venvBaseTable, symbol.New("not"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), &types.TyList_{&types.Tyint, nil}, &types.Tyint})
 
-	symbol.Enter(venvBaseTable, symbol.Insert("exit"),
+	symbol.Enter(venvBaseTable, symbol.New("exit"),
 		&FunEntry{translate.Outermost(), temp.Newlabel(), &types.TyList_{&types.Tyint, nil}, &types.Tyvoid})
 
 	return venvBaseTable

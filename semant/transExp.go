@@ -13,7 +13,7 @@ import (
 
 func transExp(level translate.Level, breakk translate.Exp, venv table.Table, tenv table.Table, e absyn.Exp) expTy {
 	if e == nil {
-		println("NoExp")
+		util.Debug("NoExp")
 		return expTy{translate.NoExp(), &types.Tyvoid}
 	}
 	// var Var translate.Exp
@@ -21,22 +21,22 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 
 	switch e.(type) {
 	case *absyn.VarExp:
-		println("VarExp")
+		util.Debug("VarExp")
 		e := e.(*absyn.VarExp)
 		return transVar(level, breakk, venv, tenv, e.Var)
 	case *absyn.NilExp:
-		println("NilExp")
+		util.Debug("NilExp")
 		return expTy{translate.NilExp(), &types.Tynil}
 	case *absyn.IntExp:
-		println("IntExp")
+		util.Debug("IntExp")
 		e := e.(*absyn.IntExp)
 		return expTy{translate.IntExp(e.Int), &types.Tyint}
 	case *absyn.StringExp:
-		println("StringExp")
+		util.Debug("StringExp")
 		e := e.(*absyn.StringExp)
 		return expTy{translate.StringExp(e.String), &types.Tystring}
 	case *absyn.CallExp:
-		println("CallExp")
+		util.Debug("CallExp")
 		e := e.(*absyn.CallExp)
 		FunCall := symbol.Look(venv, e.Func)
 		if FunCall, ok := FunCall.(*env.FunEntry); !ok {
@@ -73,7 +73,7 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return expTy{translate.NoExp(), &types.Tyvoid}
 	case *absyn.OpExp:
-		println("OpExp")
+		util.Debug("OpExp")
 		e := e.(*absyn.OpExp)
 		leftExp := transExp(level, breakk, venv, tenv, e.Left)
 		rightExp := transExp(level, breakk, venv, tenv, e.Right)
@@ -125,7 +125,7 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return expTy{OpExp, &types.Tyint}
 	case *absyn.RecordExp:
-		println("RecordExp")
+		util.Debug("RecordExp")
 		e := e.(*absyn.RecordExp)
 		recordTy := getActualTy(symbol.Look(tenv, e.Typ).(types.Ty))
 		if recordTy == nil {
@@ -167,7 +167,7 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		/*return of error*/
 		return expTy{translate.NoExp(), &types.Record_{nil}}
 	case *absyn.SeqExp:
-		println("SeqExp")
+		util.Debug("SeqExp")
 		e := e.(*absyn.SeqExp)
 		var SeqExpTy expTy
 		var Seq_TyList translate.ExpList = nil
@@ -183,7 +183,7 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return expTy{translate.SeqExp(Seq_TyList), SeqExpTy.ty}
 	case *absyn.AssignExp:
-		println("AssignExp")
+		util.Debug("AssignExp")
 		e := e.(*absyn.AssignExp)
 		assignVar := transVar(level, breakk, venv, tenv, e.Var)
 		AssignExp := transExp(level, breakk, venv, tenv, e.Exp)
@@ -192,7 +192,7 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return expTy{translate.AssignExp(assignVar.exp, AssignExp.exp), &types.Tyvoid}
 	case *absyn.IfExp:
-		println("IfExp")
+		util.Debug("IfExp")
 		e := e.(*absyn.IfExp)
 		var testExpTy, thenExpTy expTy
 		elseExpTy := expTy{nil, nil}
@@ -223,7 +223,7 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return expTy{translate.IfExp(testExpTy.exp, thenExpTy.exp, elseExpTy.exp), thenExpTy.ty}
 	case *absyn.WhileExp:
-		println("WhileExp")
+		util.Debug("WhileExp")
 		e := e.(*absyn.WhileExp)
 		whileExpTy := transExp(level, breakk, venv, tenv, e.Test)
 		if _, ok := whileExpTy.ty.(*types.Int_); ok {
@@ -235,22 +235,22 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 			translate.DoneExp(),
 		), &types.Tyvoid}
 	case *absyn.ForExp:
-		println("ForExp")
+		util.Debug("ForExp")
 		e := e.(*absyn.ForExp)
 		/*Transform for into while*/
 		i_Dec := &absyn.VarDec{e.Pos, e.Var, nil, e.Lo, true}
-		limit_Dec := &absyn.VarDec{e.Pos, symbol.Insert("limit"), nil, e.Hi, true}
-		test_Dec := &absyn.VarDec{e.Pos, symbol.Insert("test"), nil, &absyn.IntExp{e.Pos, 1}, true}
+		limit_Dec := &absyn.VarDec{e.Pos, symbol.New("limit"), nil, e.Hi, true}
+		test_Dec := &absyn.VarDec{e.Pos, symbol.New("test"), nil, &absyn.IntExp{e.Pos, 1}, true}
 		for_Dec := &absyn.DecList_{i_Dec, &absyn.DecList_{limit_Dec, &absyn.DecList_{test_Dec, nil}}}
 
 		i_Exp := &absyn.VarExp{e.Pos, &absyn.SimpleVar{e.Pos, e.Var}}
 		then_Exp := &absyn.AssignExp{e.Pos, &absyn.SimpleVar{e.Pos, e.Var},
 			&absyn.OpExp{e.Pos, absyn.PlusOp, i_Exp, &absyn.IntExp{e.Pos, 1}}}
-		limit_Exp := &absyn.VarExp{e.Pos, &absyn.SimpleVar{e.Pos, symbol.Insert("limit")}}
-		else_Exp := &absyn.AssignExp{e.Pos, &absyn.SimpleVar{e.Pos, symbol.Insert("test")}, &absyn.IntExp{e.Pos, 0}}
+		limit_Exp := &absyn.VarExp{e.Pos, &absyn.SimpleVar{e.Pos, symbol.New("limit")}}
+		else_Exp := &absyn.AssignExp{e.Pos, &absyn.SimpleVar{e.Pos, symbol.New("test")}, &absyn.IntExp{e.Pos, 0}}
 		limit_test_Exp := &absyn.IfExp{e.Pos, &absyn.OpExp{e.Pos, absyn.LtOp, i_Exp, limit_Exp}, then_Exp, else_Exp}
 		forSeq_Exp := &absyn.SeqExp{e.Pos, &absyn.ExpList_{e.Body, &absyn.ExpList_{limit_test_Exp, nil}}}
-		test_Exp := &absyn.VarExp{e.Pos, &absyn.SimpleVar{e.Pos, symbol.Insert("test")}}
+		test_Exp := &absyn.VarExp{e.Pos, &absyn.SimpleVar{e.Pos, symbol.New("test")}}
 		while_Exp := &absyn.WhileExp{e.Pos, test_Exp, forSeq_Exp}
 		if_Exp := &absyn.IfExp{e.Pos, &absyn.OpExp{e.Pos, absyn.LeOp, e.Lo, e.Hi}, while_Exp, nil}
 		ifSeq_Exp := &absyn.SeqExp{e.Pos, &absyn.ExpList_{if_Exp, nil}}
@@ -258,14 +258,14 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 
 		return transExp(level, breakk, venv, tenv, let_Exp)
 	case *absyn.BreakExp:
-		println("BreakExp")
+		util.Debug("BreakExp")
 		// e := e.(*absyn.BreakExp)
 		if breakk == nil {
 			return expTy{translate.NoExp(), &types.Tyvoid}
 		}
 		return expTy{translate.BreakExp(breakk), &types.Tyvoid}
 	case *absyn.LetExp:
-		println("LetExp")
+		util.Debug("LetExp")
 		e := e.(*absyn.LetExp)
 		decList := e.Decs
 		var expList translate.ExpList = nil
@@ -286,7 +286,7 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return expTy{translate.SeqExp(expList), letBodyExpTy.ty}
 	case *absyn.ArrayExp:
-		println("ArrayExp")
+		util.Debug("ArrayExp")
 		e := e.(*absyn.ArrayExp)
 		arrayTy := getActualTy(symbol.Look(tenv, e.Typ).(types.Ty))
 		if arrayTy == nil {

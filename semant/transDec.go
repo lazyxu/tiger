@@ -15,7 +15,7 @@ import (
 func transDec(level translate.Level, breakk translate.Exp, venv table.Table, tenv table.Table, d absyn.Dec) translate.Exp {
 	switch d.(type) {
 	case *absyn.FunctionDec:
-		println("FunctionDec")
+		util.Debug("FunctionDec")
 		d := d.(*absyn.FunctionDec)
 		fundecList := d.Function
 		var paramFieldList absyn.FieldList
@@ -103,14 +103,14 @@ func transDec(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return translate.NoExp()
 	case *absyn.VarDec:
-		println("VarDec")
+		util.Debug("VarDec")
 		d := d.(*absyn.VarDec)
 		initExpTy := transExp(level, breakk, venv, tenv, d.Init)
 		access := translate.AllocLocal(level, d.Escape)
 		if d.Typ != nil { /*var with type decelaration, e.g.: var a:int := 0*/
 			varTy := symbol.Look(tenv, d.Typ).(types.Ty)
-			// println(getActualTy(varTy).(*types.Int_))
-			// println(getActualTy(initExpTy.ty).(*types.Int_))
+			// util.Debug(getActualTy(varTy).(*types.Int_))
+			// util.Debug(getActualTy(initExpTy.ty).(*types.Int_))
 			if varTy == nil {
 				yacc.EM_error(d.Pos, "Type '"+d.Typ.Name+"' is undefined.")
 			} else if !equalTy(varTy, initExpTy.ty, d.Pos) {
@@ -133,7 +133,7 @@ func transDec(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		}
 		return translate.AssignExp(translate.SimpleVar(access, level), initExpTy.exp)
 	case *absyn.TypeDec:
-		println("TypeDec")
+		util.Debug("TypeDec")
 		d := d.(*absyn.TypeDec)
 		var nameTy types.Ty
 		Cycle := true

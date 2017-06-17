@@ -2,6 +2,8 @@ package temp
 
 import (
 	"strconv"
+
+	"github.com/MeteorKL/tiger/util"
 )
 
 type Temp *Temp_
@@ -20,8 +22,9 @@ var temps int = 0
 func Newtemp() Temp {
 	p := new(Temp_)
 	p.Num = temps
+	buf := strconv.Itoa(p.Num)
+	util.Debug("Newtemp: L" + buf)
+	Enter(GetTempMap(), p, "t"+buf)
 	temps++
-	r := strconv.Itoa(p.Num)
-	Enter(GetTempMap(), p, "t"+r)
 	return p
 }

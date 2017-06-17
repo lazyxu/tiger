@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 
 	"strconv"
@@ -18,7 +19,7 @@ import (
 	"github.com/MeteorKL/tiger/yacc"
 )
 
-/* clean:rm -rf testcases/*.png testcases/*.Linearize testcases/*.ir testcases/*.ast testcases/*.TraceSchedule testcases/*.s */
+/* clean:rm -rf testcases/*.png testcases/*.dot testcases/*.s */
 
 //go doc -u xxx 查看某个函数的头文件
 //godoc -analysis=type -http=:6060
@@ -26,18 +27,9 @@ import (
 //go:generate go build -o tiger main.go
 
 func main() {
-	// var key interface{}
-	// println(&key)
-	// // s := strings.NewReader("ABCEFG")
-	// // br := bufio.NewReader(s)
-	// b := bytes.NewBuffer(make([]byte, 0))
-	// fmt.Fprintf(b, "%d", &key)
-	// i := b.Bytes()
-	// fmt.Printf("%d\n", i)
-	// fmt.Printf("%s\n", b)
 	args := os.Args
 	if args == nil || len(args) != 2 {
-		println("usage: tiger file.tig")
+		fmt.Printf("usage: tiger file.tig")
 		return
 	}
 	absyn_root := yacc.YYParse(args[1])
@@ -54,28 +46,36 @@ func main() {
 	for i := 0; frags != nil; frags = frags.Tail {
 		switch frags.Head.(type) {
 		case *frame.ProcFrag_:
-			println("*frame.ProcFrag_")
+			util.Debug("*frame.ProcFrag_")
 			tree.Node_count = 1
 			procFrag := frags.Head.(*frame.ProcFrag_)
-			tree.PrintStm(args[1]+strconv.Itoa(i)+".ir", procFrag.Body)
-			util.Visualization(args[1] + strconv.Itoa(i) + ".ir")
 
+			out := args[1] + strconv.Itoa(i)
+			tree.PrintStm(out+".ir.dot", procFrag.Body)
+			util.Visualization(out + ".ir.dot")
+
+			stm := canon.DoStm(procFrag.Body)
+			tree.PrintStm(out+".DoStm.dot", stm)
+			util.Visualization(out + ".DoStm.dot")
 			stmList := canon.Linearize(procFrag.Body)
-			tree.PrintStmList(args[1]+strconv.Itoa(i)+".Linearize", stmList)
-			util.Visualization(args[1] + strconv.Itoa(i) + ".Linearize")
+			tree.PrintStmList(out+".Linearize.dot", stmList)
+			util.Visualization(out + ".Linearize.dot")
 
-			stmList = canon.TraceSchedule(canon.BasicBlocks(stmList))
-			tree.PrintStmList(args[1]+strconv.Itoa(i)+".TraceSchedule", stmList)
-			util.Visualization(args[1] + strconv.Itoa(i) + ".TraceSchedule")
+			BasicBlocks := canon.BasicBlocks(stmList)
+			tree.PrintStmList(out+"."+BasicBlocks.Label.Name, BasicBlocks.StmLists.Head)
+			util.Visualization(out + "." + BasicBlocks.Label.Name)
+			stmList = canon.TraceSchedule(BasicBlocks)
+			tree.PrintStmList(out+".TraceSchedule.dot", stmList)
+			util.Visualization(out + ".TraceSchedule.dot")
 
-			iList := codegen.Codegen(procFrag.Frame, stmList) /* 9 */
+			iList := codegen.Codegen(procFrag.Frame, stmList)
 
 			w.WriteString("BEGIN " + procFrag.Frame.Name.Name + "\n")
 			assem.PrintInstrList(w, iList, temp.LayerMap(frame.TempMap(), temp.GetTempMap()))
 			w.WriteString("END " + procFrag.Frame.Name.Name + "\n\n")
-
+			i++
 		case *frame.StringFrag_:
-			println("*frame.StringFrag_")
+			util.Debug("*frame.StringFrag_")
 			stringFrag := frags.Head.(*frame.StringFrag_)
 			w.WriteString(stringFrag.Label.Name + ": " + stringFrag.Str + "\n")
 		}

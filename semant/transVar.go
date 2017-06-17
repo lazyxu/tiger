@@ -13,7 +13,7 @@ import (
 
 func transVar(level translate.Level, breakk translate.Exp, venv table.Table, tenv table.Table, v absyn.Var) expTy {
 	if v == nil {
-		println("NoExp")
+		util.Debug("NoExp")
 		return expTy{translate.NoExp(), &types.Tyvoid}
 	}
 	var Var translate.Exp
@@ -21,7 +21,7 @@ func transVar(level translate.Level, breakk translate.Exp, venv table.Table, ten
 
 	switch v.(type) {
 	case *absyn.SimpleVar:
-		println("SimpleVar")
+		util.Debug("SimpleVar")
 		v := v.(*absyn.SimpleVar)
 		Env := symbol.Look(venv, v.Simple)
 		switch Env.(type) {
@@ -34,7 +34,7 @@ func transVar(level translate.Level, breakk translate.Exp, venv table.Table, ten
 		yacc.EM_error(v.Pos, "Undefined variable: "+v.Simple.Name)
 		break
 	case *absyn.FieldVar:
-		println("FieldVar")
+		util.Debug("FieldVar")
 		v := v.(*absyn.FieldVar)
 		ExpTy := transVar(level, breakk, venv, tenv, v.Var)
 		Var = translate.NoExp()
@@ -56,7 +56,7 @@ func transVar(level translate.Level, breakk translate.Exp, venv table.Table, ten
 			break
 		}
 	case *absyn.SubscriptVar:
-		println("SubscriptVar")
+		util.Debug("SubscriptVar")
 		v := v.(*absyn.SubscriptVar)
 		ExpTy := transVar(level, breakk, venv, tenv, v.Var)
 		Var := translate.NoExp()

@@ -36,7 +36,7 @@ func Enter(t Table, key interface{}, value interface{}) {
 	util.Assert(t != nil && key != nil)
 	buf := bytes.NewBuffer(make([]byte, 0))
 	fmt.Fprintf(buf, "%d", key)
-	// println("Enter: ", string(buf.Bytes()))
+	// util.Debug("Enter: ", string(buf.Bytes()))
 	index := util.Hash(buf.Bytes()) % TABSIZE
 	t.Table[index] = &binder_{key, value, t.Table[index], t.Top}
 	t.Top = key
@@ -61,7 +61,7 @@ func Pop(t Table) interface{} {
 	util.Assert(key != nil)
 	buf := bytes.NewBuffer(make([]byte, 0))
 	fmt.Fprintf(buf, "%d", key)
-	// println("Pop: ", string(buf.Bytes()))
+	// util.Debug("Pop: ", string(buf.Bytes()))
 	index := util.Hash(buf.Bytes()) % TABSIZE
 	b := t.Table[index]
 	util.Assert(b != nil)

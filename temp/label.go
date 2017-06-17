@@ -1,7 +1,11 @@
 package temp
 
-import "github.com/MeteorKL/tiger/symbol"
-import "strconv"
+import (
+	"strconv"
+
+	"github.com/MeteorKL/tiger/symbol"
+	"github.com/MeteorKL/tiger/util"
+)
 
 type Label symbol.Symbol
 
@@ -15,9 +19,12 @@ var labels int = 0
 
 func Newlabel() Label {
 	buf := "L" + strconv.Itoa(labels)
+	util.Debug("Newlabel: L" + buf)
 	labels++
-	return Label(symbol.Insert(buf))
+	return Label(symbol.New(buf))
 }
-func Namedlabel(s string) Label {
-	return Label(symbol.Insert(s))
+
+func StrToLabel(s string) Label {
+	util.Debug("StrToLabel: " + s)
+	return Label(symbol.New(s))
 }

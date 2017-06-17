@@ -452,7 +452,7 @@ fundec:     FUNCTION id LPAREN tyfields RPAREN EQ exp             {$$=&absyn.Fun
             | FUNCTION id LPAREN tyfields RPAREN COLON id EQ exp  {$$=&absyn.Fundec_{EM_tokPos, $2, $4, $7, $9}}
             ;
 
-id:         ID                            {$$=symbol.Insert($1)}
+id:         ID                            {$$=symbol.New($1)}
             ;
             
             /* 左值(变量)文法 */
@@ -558,7 +558,8 @@ type Name_ struct {
 
 #### equalTy
 判断两个类型是否相等  
-1.左右中任一个不能为 void 类型 左右不能全为 nil  2.可以一个为 nil 一个为 record 类型   
+1.左右中任一个不能为 void 类型 左右不能全为 nil  
+2.可以一个为 nil 一个为 record 类型   
 3.其它情况下必须左右类型完全一致  
 
 ### 入口 
@@ -581,9 +582,12 @@ type FunEntry struct {
 
 ### 符号表
 符号表（symbol table）也称为环境（enviroment）  
-位于 `env/env.go`  `tenv`（type enviroment）记录了数据类型标识符的名称和类型，是符号-类型表。在初始化 tenv 时 (函数 Base_tenv),要添加两种基本类型 int 和 string  `venv`（value enviroment）记录了非数据类型标识符的信息，是符号-入口表。在初始化 venv 时 (函数 Base_venv),要添加库函数 (如 print, flush 等)   
+位于 `env/env.go`  
+`tenv`（type enviroment）记录了数据类型标识符的名称和类型，是符号-类型表。在初始化 tenv 时 (函数 Base_tenv),要添加两种基本类型 int 和 string  
+`venv`（value enviroment）记录了非数据类型标识符的信息，是符号-入口表。在初始化 venv 时 (函数 Base_venv),要添加库函数 (如 print, flush 等)   
 
-#### hashtable的实现位于 `table`
+#### hashtable的实现
+位于 `table`
 
 ```
 type binder *binder_
@@ -658,16 +662,31 @@ BeginScope的时候将其地址加入到符号表中`Enter(t, &marksym, nil)`
 ##### func EndScope(t table.Table)
 结束新的作用域  
 从不断调用`table.Pop`方法获取key，直到其和marksym的地址相同
-### 语义分析的一般步骤
-语义分析的一般步骤为:当检查某个语法结点时, 需要递归地检查结点的每个子语法成分, 确认所有子语法成分的正确且翻译完毕后, 调用 translate 对整个表达式进行翻译  对表达式的检查称为语义分析, 但从上面的步骤可以看出, 它和中间代码的翻译是联系在一起的  
-### 类型检查
-#### transTy
-##### absyn.NameTy 未知类型 从tenv中查找该变量类型* 若没有发现类型,则报告未知类型错误`"Type xxx is undefined."`， 返回int类型
+
+### 语义分析的一般步骤
+语义分析的一般步骤为:
+当检查某个语法结点时, 需要递归地检查结点的每个子语法成分, 确认所有子语法成分的正确且翻译完毕后, 调用 translate 对整个表达式进行翻译  
+对表达式的检查称为语义分析, 但从上面的步骤可以看出, 它和中间代码的翻译是联系在一起的  
+
+### 类型检查
+
+#### transTy
+##### absyn.NameTy 未知类型 
+从tenv中查找该变量类型
+
+* 若没有发现类型,则报告未知类型错误`"Type xxx is undefined."`， 返回int类型
 * 否则返回该变量类型
-##### ArrayTy 数组类型从 tenv 中查找该变量类型，若没有发现类型，则报告未知类型错误`"Type xxx is undefined."`  
+
+##### ArrayTy 数组类型
+从 tenv 中查找该变量类型，若没有发现类型，则报告未知类型错误`"Type xxx is undefined."`  
 最后返回转换后的 ARRAY 类型
-##### RecordTy 记录类型检查该记录类型每个域的类型在 tenv 中是否存在  若否,则报告未知类型错误`"Type xxx is undefined."`   最后返回转换后的 RECORD 类型  
-#### transDec
+
+##### RecordTy 记录类型
+检查该记录类型每个域的类型在 tenv 中是否存在  
+若否,则报告未知类型错误`"Type xxx is undefined."`   
+最后返回转换后的 RECORD 类型  
+
+#### transDec
 ##### absyn.VarDec 变量声明
 先调用 transExp 翻译`:=`后面的语句（即初始化的表达式），得到其初始值的类型，根据其是否有显式的变量类型声明来分类讨论  
 调用`translate.AllocLocal(level, d.Escape)`方法在当前level上创建一个局部变量  ，获取其access（就是它的存储地址）
@@ -690,9 +709,15 @@ BeginScope的时候将其地址加入到符号表中`Enter(t, &marksym, nil)`
 Tiger 语言的类型声明采用块机制，即连续的absyn.TypeDec一起处理，允许递归声明  
 
 ```
-// 循环定义不允许type a=ctype b=atype c=a
+// 循环定义不允许
+type a=c
+type b=a
+type c=a
 
-// 递归定义允许type tree ={key: int, children: treelist}type treelist = {hd: tree, tl: treelist}```
+// 递归定义允许
+type tree ={key: int, children: treelist}
+type treelist = {hd: tree, tl: treelist}
+```
 
 具体步骤：  
 1.把所有类型名（如a, b, c, tree, treelist）加入到符号表，定义其类型为Nil    
@@ -803,13 +828,15 @@ symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTy
 ##### SeqExp
 `format: exp;exp;`  
 1.无需错误检查,因为它是若干个已经检查过的表达式的链   
-2.分别将每个子表达式进行翻译,用 translate.ExpList_prepend 函数将它们的IR树结点连  3.最后返回`expTy{translate.SeqExp(Seq_TyList), SeqExpTy.ty}`  
+2.分别将每个子表达式进行翻译,用 translate.ExpList_prepend 函数将它们的IR树结点连  
+3.最后返回`expTy{translate.SeqExp(Seq_TyList), SeqExpTy.ty}`  
 
 ##### AssignExp
 `format: lvalue := exp`  
 1.用 transVar 翻译 lvalue ，用 transExp 翻译 exp  
 2.用 equalTy 判断两者类型是否匹配，若否则报类型不匹配错误`"Types of left and right side of assignment do not match!"`  
-注意:赋值表达式返回值为空   
+
+注意:赋值表达式返回值为空   
 
 （此处应检查循环变量不可赋值）
 
@@ -817,14 +844,18 @@ symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTy
 `format: if exp then exp else exp` ?????  
 
 如果测试条件的表达式不返回整数,报告测试条件错误(Tiger 中非 0 为真,0 为假)  
-如果缺少 else 子句,且 then 子句有返回值,报错  如果不缺少 else 子句,检查 then 和 else 的返回值是否匹配(采用 AssignExp 的方法, 只是都返回 nil 被认为是合法的)  
+如果缺少 else 子句,且 then 子句有返回值,报错  
+如果不缺少 else 子句,检查 then 和 else 的返回值是否匹配(采用 AssignExp 的方法, 只是都返回 nil 被认为是合法的)  
 
 ##### WhileExp
 `format: while exp do exp` ?????    
 如果测试条件不是整数,报告测试条件错误`"While test should be int type."`  
-注意这里不需要使 Begin/EndScope  返回
+注意这里不需要使 Begin/EndScope  
 
-```expTy{translate.WhileExp(
+返回
+
+```
+expTy{translate.WhileExp(
 			whileExpTy.exp,
 			transExp(level, translate.DoneExp(), venv, tenv, e.Body).exp,
 			translate.DoneExp(),
@@ -833,7 +864,11 @@ symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTy
 
 ##### ForExp
 `format: for id := exp to exp do exp`  ?????    
-如果初始值和终止值不是整数类型,则报错  用 BeginScope 进入 vEnv 新的符号表 (循环内部用) 为帧分配循环变量的 Access  把循环变量添加到 vEnv 的 LoopVarEntry 项目中  用 EndScope 退出 vEnv 的符号表  注意进/出循环使要调用 newLoop 和 exitLoop (详见 break 表达式)  
+如果初始值和终止值不是整数类型,则报错  
+用 BeginScope 进入 vEnv 新的符号表 (循环内部用) 为帧分配循环变量的 Access  
+把循环变量添加到 vEnv 的 LoopVarEntry 项目中  
+用 EndScope 退出 vEnv 的符号表  
+注意进/出循环使要调用 newLoop 和 exitLoop (详见 break 表达式)  
 
 ##### BreakExp
 * 如果参数 breakk 为nil，则返回一个空语句  
@@ -841,7 +876,12 @@ symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTy
 
 ##### LetExp
 `format: let decs in explst end`
-无需错误检查,只需按如下步骤进行:  1.venv 和 tenv 分别用 BeginScope 进入新的符号表  2.翻译定义部分 (let...in 之间), 用 translate.ExpList_prepend 将 IR 树结点连接   3.翻译体部分 (in...end 之间),  用 translate.ExpList_prepend 将定义和体部分连接   4.venv 和 tenv 用 EndScope 返回到原符号表  5.如果是最外面一层，则调用`translate.ProcEntryExit(level, translate.SeqExp(expList), level.Formals)`方法将该函数声明作为 procFrag 加入到 fragList 里面去  
+无需错误检查,只需按如下步骤进行:  
+1.venv 和 tenv 分别用 BeginScope 进入新的符号表  
+2.翻译定义部分 (let...in 之间), 用 translate.ExpList_prepend 将 IR 树结点连接   
+3.翻译体部分 (in...end 之间),  用 translate.ExpList_prepend 将定义和体部分连接   
+4.venv 和 tenv 用 EndScope 返回到原符号表  
+5.如果是最外面一层，则调用`translate.ProcEntryExit(level, translate.SeqExp(expList), level.Formals)`方法将该函数声明作为 procFrag 加入到 fragList 里面去  
 6.返回`expTy{translate.SeqExp(expList), letBodyExpTy.ty}`  
 
 ##### ArrayExp
@@ -849,7 +889,8 @@ symbol.Enter(venv, fundecList.Head.Name, &env.FunEntry{newLevel, label, formalTy
 1.先在 tenv 中查找类型并获取其实际类型，若不存在则报类型未定义错误`"Array type xxx is undefined!"`，若非数组类型报告不是数组类型错误`xxx is not a array type!"`  
 2.再翻译 size 表达式和 init 表达式  
 3.检查数组范围 size 是否为整数,若否报错`"Array size xxx should be int type!"`  
-4. tenv 中的数组类型和实际类型是否匹配,若否报告类型匹配错误`"Array type xxx doesn't match!"`  5.若无错误则返回`expTy{translate.ArrayExp(sizeExpTy.exp, initExpTy.exp), arrayTy}`
+4. tenv 中的数组类型和实际类型是否匹配,若否报告类型匹配错误`"Array type xxx doesn't match!"`  
+5.若无错误则返回`expTy{translate.ArrayExp(sizeExpTy.exp, initExpTy.exp), arrayTy}`
 
 ## 5. 活动记录 (栈帧)
 我们采用的是 X86 汇编，一般它的函数调用时的汇编是这样的
@@ -880,7 +921,7 @@ ebp+4+8    参数1
 ebp+4+4    返回地址 
 ebp+4      old ebp 
 ebp+4+4-8  局部变量1 
-ebp+4+4-12 局部变量2 
+ebp+4+4-12StrToLabel
 ebp+4+4-16 局部变量3 
 ...
 -------------
@@ -976,9 +1017,30 @@ type ProcFrag_ struct {
 位于 `tree`  
 tree.Exp tree.Stm的区别在于是否有返回值
 
-从 tree.Exp 中派生,表示有返回值的表达式:  1.CONST (i) 整数常量 i  2.NAME (n) 字符常量 n  3.TEMP (t) 临时变量,是实现机中理想的寄存器  4.BINOP (o, t1, t2) 用运算符 o 对 t1 和 t2 进行运算,包括算术、逻辑运算等  5.MEM (e) 表示地址 e 的存储器中 wordsize 字节的内容  6.CALL (f, l)  函数调用,函数为 f,参数列表为 l  7.ESEQ (s, e) 先计算 stm s,再根据 stm s 计算 exp e,得出结果  
-从 tree.Stm 中派生,表示无返回值的表达式:   1.MOVE (d, s) 将源 s 移入目标 d  其中的两种常见情况为:      MOVE (TEMP (t), e) 计算 e 并把它放入临时单元 t 中      MOVE (MEM (e1), e2) 计算 e1,得到地址 a,再计算 e2,放入地址 a  2.EXP (e) 计算 e, 释放结果  3.JUMP (e, labs) 无条件跳转到 labs (只使用链表中的第一个 label, e 可以忽略掉)   4.CJUMP (o, e1, e2, t, f) 对 e1, e2 求值,再用 o 运算.结果为真跳到 t,为假跳到 f.比较关系定义在`tree/op.go`中,如 tree.Eq, tree.Lt  5.SEQ (s1, s2) 将stm s2放在stm s1后面  6.LABEL (n) 定义标号 n 作为当前机器码地址  
-另外在 tree 包中还有 ExpList 和 StmList,表示有(无)返回值表达式的链表  注意区分 EXP 和 Exp,前者是 Stm 的一个子类表示无返回值的表达式，后者是有返回值的抽象类  
+从 tree.Exp 中派生,表示有返回值的表达式:  
+1.CONST (i) 整数常量 i  
+2.NAME (n) 字符常量 n  
+3.TEMP (t) 临时变量,是实现机中理想的寄存器  
+4.BINOP (o, t1, t2) 用运算符 o 对 t1 和 t2 进行运算,包括算术、逻辑运算等  
+5.MEM (e) 表示地址 e 的存储器中 wordsize 字节的内容  
+6.CALL (f, l)  函数调用,函数为 f,参数列表为 l  
+7.ESEQ (s, e) 先计算 stm s,再根据 stm s 计算 exp e,得出结果  
+
+
+从 tree.Stm 中派生,表示无返回值的表达式:   
+1.MOVE (d, s) 将源 s 移入目标 d  
+其中的两种常见情况为:  
+    MOVE (TEMP (t), e) 计算 e 并把它放入临时单元 t 中  
+    MOVE (MEM (e1), e2) 计算 e1,得到地址 a,再计算 e2,放入地址 a  
+2.EXP (e) 计算 e, 释放结果  
+3.JUMP (e, labs) 无条件跳转到 labs (只使用链表中的第一个 label, e 可以忽略掉)   
+4.CJUMP (o, e1, e2, t, f) 对 e1, e2 求值,再用 o 运算.结果为真跳到 t,为假跳到 f.比较关系定
+义在`tree/op.go`中,如 tree.Eq, tree.Lt  
+5.SEQ (s1, s2) 将stm s2放在stm s1后面  
+6.LABEL (n) 定义标号 n 作为当前机器码地址  
+
+另外在 tree 包中还有 ExpList 和 StmList,表示有(无)返回值表达式的链表  
+注意区分 EXP 和 Exp,前者是 Stm 的一个子类表示无返回值的表达式，后者是有返回值的抽象类  
 
 ### 表达式的种类
 位于`translate/exp.go`  
@@ -1029,7 +1091,10 @@ type Level_ struct {
 
 ### 抽象语法树翻译成中间代码的过程
 这个过程的输入是一棵抽象语法树, 输出是 IR 树 
-1 抽象语法树 2 Semant 检查 (第四部分)3 Translate 翻译出宏观树型‡4 通过 Translate.Ex, Cx 或 Nx 生成具体 IR 树结点
+1 抽象语法树 
+2 Semant 检查 (第四部分)
+3 Translate 翻译出宏观树型‡
+4 通过 Translate.Ex, Cx 或 Nx 生成具体 IR 树结点
 
 #### func SimpleVar(access Access, level Level) Exp
 简单变量：  
