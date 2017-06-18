@@ -13,7 +13,7 @@ type expTy struct {
 	ty  types.Ty
 }
 
-func SEM_transProg(exp absyn.Exp) frame.FragList {
+func SEM_transProg(exp absyn.Exp) (frame.ProcFragList, frame.StringFragList) {
 	tenv := env.Base_tenv()
 	venv := env.Base_venv()
 	transExp(translate.Outermost(), nil, venv, tenv, exp)

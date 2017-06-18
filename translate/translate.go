@@ -320,32 +320,20 @@ func EqRef(op absyn.Oper, left Exp, right Exp) Exp {
 	return &Cx_{trues, falses, cond}
 }
 
-var fragList frame.FragList = nil //proc list
+var procFragList frame.ProcFragList = nil //proc list
 func ProcEntryExit(level Level, body Exp, formals AccessList) {
-	proc_frag := &frame.ProcFrag_{unNx(body), level.Frame}
-	fragList = &frame.FragList_{proc_frag, fragList}
+	procFrag := &frame.ProcFrag_{unNx(body), level.Frame}
+	procFragList = &frame.ProcFragList_{procFrag, procFragList}
 }
 
-var stringFragList frame.FragList = nil //string list
+var stringFragList frame.StringFragList = nil //string list
 func StringExp(s string) Exp {
 	label := temp.Newlabel()
 	string_frag := &frame.StringFrag_{label, s}
-	stringFragList = &frame.FragList_{string_frag, stringFragList}
+	stringFragList = &frame.StringFragList_{string_frag, stringFragList}
 	return &Ex_{&tree.NAME_{label}}
 }
 
-func GetResult() frame.FragList {
-	var frag_tail frame.FragList
-	frag := stringFragList
-	for frag != nil {
-		frag_tail = frag
-		frag = frag.Tail
-	}
-	if frag_tail != nil {
-		frag_tail.Tail = fragList
-	}
-	if stringFragList != nil {
-		return stringFragList
-	}
-	return fragList
+func GetResult() (frame.ProcFragList, frame.StringFragList) {
+	return procFragList, stringFragList
 }

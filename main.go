@@ -36,50 +36,49 @@ func main() {
 	absyn.PrintExp(args[1]+".ast", absyn_root)
 	util.Visualization(args[1] + ".ast")
 
-	frags := semant.SEM_transProg(absyn_root)
+	procFrag, stringFrag := semant.SEM_transProg(absyn_root)
 
 	tree.Node_count = 1
-
-	f, err := os.OpenFile(args[1]+".s", os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(args[1]+".s", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	util.PanicErr(err)
 	w := bufio.NewWriter(f)
-	for i := 0; frags != nil; frags = frags.Tail {
-		switch frags.Head.(type) {
-		case *frame.ProcFrag_:
-			util.Debug("*frame.ProcFrag_")
-			tree.Node_count = 1
-			procFrag := frags.Head.(*frame.ProcFrag_)
-
-			out := args[1] + strconv.Itoa(i)
-			tree.PrintStm(out+".ir.dot", procFrag.Body)
-			util.Visualization(out + ".ir.dot")
-
-			stm := canon.DoStm(procFrag.Body)
-			tree.PrintStm(out+".DoStm.dot", stm)
-			util.Visualization(out + ".DoStm.dot")
-			stmList := canon.Linearize(stm)
-			tree.PrintStmList(out+".Linearize.dot", stmList)
-			util.Visualization(out + ".Linearize.dot")
-
-			BasicBlocks := canon.BasicBlocks(stmList)
-			tree.PrintStmList(out+"."+BasicBlocks.Label.Name, BasicBlocks.StmLists.Head)
-			util.Visualization(out + "." + BasicBlocks.Label.Name)
-			stmList = canon.TraceSchedule(BasicBlocks)
-			tree.PrintStmList(out+".TraceSchedule.dot", stmList)
-			util.Visualization(out + ".TraceSchedule.dot")
-
-			iList := codegen.Codegen(procFrag.Frame, stmList)
-
-			w.WriteString("start:\n")
-			assem.PrintInstrList(w, iList, temp.LayerMap(frame.TempMap(), temp.GetTempMap()))
-			w.WriteString("\texit\n")
-			i++
-		case *frame.StringFrag_:
-			util.Debug("*frame.StringFrag_")
-			stringFrag := frags.Head.(*frame.StringFrag_)
-			w.WriteString(stringFrag.Label.Name + ": " + stringFrag.Str + "\n")
-		}
+	w.WriteString("SECTION .data\n")
+	for ; stringFrag != nil; stringFrag = stringFrag.Tail {
+		util.Debug("*frame.StringFrag_")
+		w.WriteString("\t" + stringFrag.Head.Label.Name + ": db " + stringFrag.Head.Str + ", 0x0a\n")
 	}
+	w.WriteString("\n")
+	w.WriteString("SECTION .text\n")
+	w.WriteString("\tglobal start\n\n")
+	w.WriteString("start:\n")
+	for i := 0; procFrag != nil; procFrag = procFrag.Tail {
+		util.Debug("*frame.ProcFrag_")
+		tree.Node_count = 1
+
+		out := args[1] + strconv.Itoa(i)
+		tree.PrintStm(out+".ir.dot", procFrag.Head.Body)
+		util.Visualization(out + ".ir.dot")
+
+		stm := canon.DoStm(procFrag.Head.Body)
+		tree.PrintStm(out+".DoStm.dot", stm)
+		util.Visualization(out + ".DoStm.dot")
+		stmList := canon.Linearize(stm)
+		tree.PrintStmList(out+".Linearize.dot", stmList)
+		util.Visualization(out + ".Linearize.dot")
+
+		BasicBlocks := canon.BasicBlocks(stmList)
+		tree.PrintStmList(out+"."+BasicBlocks.Label.Name, BasicBlocks.StmLists.Head)
+		util.Visualization(out + "." + BasicBlocks.Label.Name)
+		stmList = canon.TraceSchedule(BasicBlocks)
+		tree.PrintStmList(out+".TraceSchedule.dot", stmList)
+		util.Visualization(out + ".TraceSchedule.dot")
+
+		iList := codegen.Codegen(procFrag.Head.Frame, stmList)
+
+		assem.PrintInstrList(w, iList, temp.LayerMap(frame.TempMap(), temp.GetTempMap()))
+		i++
+	}
+	w.WriteString("\texit\n")
 	w.Flush()
 	f.Close()
 }

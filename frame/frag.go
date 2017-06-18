@@ -5,13 +5,6 @@ import (
 	"github.com/MeteorKL/tiger/tree"
 )
 
-type Frag interface {
-	F_frag()
-}
-
-func (*StringFrag_) F_frag() {}
-func (*ProcFrag_) F_frag()   {}
-
 type StringFrag *StringFrag_
 type StringFrag_ struct {
 	Label temp.Label
@@ -23,8 +16,14 @@ type ProcFrag_ struct {
 	Frame Frame
 }
 
-type FragList *FragList_
-type FragList_ struct {
-	Head Frag
-	Tail FragList
+type StringFragList *StringFragList_
+type StringFragList_ struct {
+	Head StringFrag
+	Tail StringFragList
+}
+
+type ProcFragList *ProcFragList_
+type ProcFragList_ struct {
+	Head ProcFrag
+	Tail ProcFragList
 }

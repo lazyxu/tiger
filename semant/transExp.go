@@ -45,21 +45,20 @@ func transExp(level translate.Level, breakk translate.Exp, venv table.Table, ten
 			var ArgumentList translate.ExpList = nil
 			formalList := FunCall.Formals
 			Arguments := e.Args
-			for Arguments != nil {
-				translate.ExpList_prepend(transExp(level, breakk, venv, tenv, Arguments.Head).exp, &ArgumentList)
-				Arguments = Arguments.Tail
-			}
-			Exp := translate.CallExp(FunCall.Label, FunCall.Level, level, &ArgumentList)
-			Arguments = e.Args
-
+			err := false
 			for Arguments != nil && formalList != nil {
 				tempArg := transExp(level, breakk, venv, tenv, Arguments.Head)
+				translate.ExpList_prepend(tempArg.exp, &ArgumentList)
 				if !equalTy(tempArg.ty, formalList.Head, e.Pos) {
 					yacc.EM_error(e.Pos, "Function parameters type failed to match in '"+e.Func.Name+"'\n")
-					return expTy{Exp, &types.Tyvoid}
+					break
 				}
 				Arguments = Arguments.Tail
 				formalList = formalList.Tail
+			}
+			Exp := translate.CallExp(FunCall.Label, FunCall.Level, level, &ArgumentList)
+			if err {
+				return expTy{Exp, &types.Tyvoid}
 			}
 			if Arguments != nil && formalList == nil {
 				yacc.EM_error(e.Pos, "Function '"+e.Func.Name+"' parameter redundant!\n")
