@@ -172,8 +172,19 @@ func DoStm(stm tree.Stm) tree.Stm {
 	return stm
 }
 
-/* linear gets rid of the top-level SEQ's, producing a list */
+// var i int = 0
+
+// linear 删除 tree.SEQ 结点，变成 tree.StmList
 func linear(stm tree.Stm, right tree.StmList) tree.StmList {
+	// if stm != nil {
+	// 	tree.PrintStm(strconv.Itoa(i)+".stm", stm)
+	// 	util.Visualization(strconv.Itoa(i) + ".stm")
+	// }
+	// if right != nil {
+	// 	tree.PrintStmList(strconv.Itoa(i)+".right", right)
+	// 	util.Visualization(strconv.Itoa(i) + ".right")
+	// }
+	// i++
 	switch stm.(type) {
 	case *tree.SEQ_:
 		stm := stm.(*tree.SEQ_)
@@ -182,10 +193,8 @@ func linear(stm tree.Stm, right tree.StmList) tree.StmList {
 	return &tree.StmList_{stm, right}
 }
 
-/* From an arbitrary Tree statement, produce a list of cleaned trees
-   satisfying the following properties:
-      1.  No SEQ's or ESEQ's
-      2.  The parent of every CALL is an EXP(..) or a MOVE(TEMP t,..) */
+// Linearize 输出的 tree.StmList 满足以下两个条件:
+// 1.没有 SEQ 和 ESEQ 2.CALL 的父结点不是 EXP(..) 就是 MOVE(TEMP t,..)
 func Linearize(stm tree.Stm) tree.StmList {
 	return linear(stm, nil)
 }

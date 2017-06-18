@@ -19,6 +19,6 @@ print:
 
 
 #    stack
-#    [rbp] 返回地址
+#    [rbp] 返回地址 EIP
 #    [rbp+8] rbp
-#    [rbp+16] 参数1
+#    [rbp+16] 参数1 最后一个push的参数

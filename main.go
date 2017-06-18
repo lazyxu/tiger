@@ -57,7 +57,7 @@ func main() {
 			stm := canon.DoStm(procFrag.Body)
 			tree.PrintStm(out+".DoStm.dot", stm)
 			util.Visualization(out + ".DoStm.dot")
-			stmList := canon.Linearize(procFrag.Body)
+			stmList := canon.Linearize(stm)
 			tree.PrintStmList(out+".Linearize.dot", stmList)
 			util.Visualization(out + ".Linearize.dot")
 
@@ -70,16 +70,15 @@ func main() {
 
 			iList := codegen.Codegen(procFrag.Frame, stmList)
 
-			w.WriteString("BEGIN " + procFrag.Frame.Name.Name + "\n")
+			w.WriteString("start:\n")
 			assem.PrintInstrList(w, iList, temp.LayerMap(frame.TempMap(), temp.GetTempMap()))
-			w.WriteString("END " + procFrag.Frame.Name.Name + "\n\n")
+			w.WriteString("\texit\n")
 			i++
 		case *frame.StringFrag_:
 			util.Debug("*frame.StringFrag_")
 			stringFrag := frags.Head.(*frame.StringFrag_)
 			w.WriteString(stringFrag.Label.Name + ": " + stringFrag.Str + "\n")
 		}
-		i++
 	}
 	w.Flush()
 	f.Close()

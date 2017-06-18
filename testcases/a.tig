@@ -1,5 +1,5 @@
 let
     var b: string := "hello"
 in
-	print(b)
+	print("x")
 end

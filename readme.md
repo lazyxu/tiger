@@ -1159,3 +1159,26 @@ string_frag := &frame.StringFrag_{label, s}
 stringFragList = &frame.FragList_{string_frag, stringFragList}
 return &Ex_{&tree.NAME_{label}}
 ```
+
+
+## 7. 基本块和轨迹
+原因: 
+1.CJUMP指令有两个跳转地址，应该变成一个，另一种情况直接跟在后面
+2.ESEQ, CALL会因为子树的计算顺序不同产生不同的结果
+3.函数参数存在寄存器里时，CALL嵌套调用会出问题
+
+DoStm()
+
+a IR 树被写成一个没有 SEQ 和 ESEQ 结点的规范树表
+b 根据该表划分基本块,每个基本块中不包含内部跳转和标号
+c 基本块被顺序放置,所有的 CJUMP 都跟有 false 标号
+
+## 8. 指令选择
+
+## 9. 活跃分析
+
+## 10. 寄存器分配
+
+## 11. 使之成为整体
+
+

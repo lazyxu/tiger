@@ -117,18 +117,17 @@ func Print(w *bufio.Writer, i Instruction, m temp.Map) {
 	case *Oper:
 		i := i.(*Oper)
 		s := format(i.Assem, i.Dst, i.Src, i.Jumps, m)
-		w.WriteString(s + "\n")
+		w.WriteString("\t" + s + "\n")
 		break
 	case *Label:
 		i := i.(*Label)
 		s := format(i.Assem, nil, nil, nil, m)
-		w.WriteString(s + "\n")
-		/* i->u.LABEL->label); */
+		w.WriteString(s + ":\n")
 		break
 	case *Move:
 		i := i.(*Move)
 		s := format(i.Assem, i.Dst, i.Src, nil, m)
-		w.WriteString(s + "\n")
+		w.WriteString("\t" + s + "\n")
 		break
 	}
 }
